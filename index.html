@@ -1,0 +1,569 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Compra Georgalos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: barra de parámetros arriba, fila de totales, tabla de reposición ordenable a ancho completo */
+:root{
+  --bg:#f5f4f1; --surface:#ffffff; --fg:#231a14; --muted:#6e625a; --line:#e3ddd6;
+  --accent:#7a3e1d; --accent-soft:#f3e6dc; --transit:#1f5f8b; --transit-bg:#e2eef7;
+  --ok:#2f7a4a; --warn:#b26b00; --crit:#b3261e; --ok-bg:#e3f2e8; --warn-bg:#fbefd9; --crit-bg:#fbe3e1;
+  --f-display:"Archivo",system-ui,sans-serif; --f-body:"Source Sans 3",system-ui,sans-serif; --f-num:"JetBrains Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#17130f; --surface:#211b16; --fg:#f1e9e2; --muted:#a99a8e; --line:#3a3029;
+  --accent:#e0a378; --accent-soft:#3a2a1f; --transit:#8cc3ea; --transit-bg:#172b3a;
+  --ok:#7fcf9a; --warn:#f0b65a; --crit:#f08a80; --ok-bg:#1d3326; --warn-bg:#3a2d14; --crit-bg:#3d1c19; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#17130f; --surface:#211b16; --fg:#f1e9e2; --muted:#a99a8e; --line:#3a3029;
+  --accent:#e0a378; --accent-soft:#3a2a1f; --transit:#8cc3ea; --transit-bg:#172b3a;
+  --ok:#7fcf9a; --warn:#f0b65a; --crit:#f08a80; --ok-bg:#1d3326; --warn-bg:#3a2d14; --crit-bg:#3d1c19; color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:15px;line-height:1.45}
+.wrap{max-width:1400px;margin:0 auto;padding:28px 20px 48px;display:grid;gap:22px}
+header{display:grid;gap:4px}
+.eyebrow{font:600 12px var(--f-body);letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+h1{font:800 clamp(26px,4vw,36px)/1.1 var(--f-display);margin:0;text-wrap:balance}
+.sub{color:var(--muted);max-width:85ch;margin:0}
+.controls{display:flex;flex-wrap:wrap;gap:14px 22px;align-items:end;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+.ctl{display:grid;gap:4px}
+.ctl label,.ctl .lbl{font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.ctl label.chk{text-transform:none;letter-spacing:0;font-size:14px;color:var(--fg);font-weight:400}
+select,input[type=number]{font:inherit;padding:6px 8px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--fg)}
+input[type=number]{width:80px;font-family:var(--f-num)}
+.chk{display:flex;gap:6px;align-items:center}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.actions{margin-left:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px;display:grid;gap:2px}
+.kpi.main{background:var(--accent-soft);border-color:transparent}
+.kpi.tr{background:var(--transit-bg);border-color:transparent}
+.kpi .v{font:700 24px var(--f-num);font-variant-numeric:tabular-nums}
+.kpi .k{font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.kpi .n{font-size:13px;color:var(--muted)}
+.tablebox{background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:1460px;font-size:14px}
+th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
+th{position:sticky;top:0;background:var(--surface);font:600 12px var(--f-body);letter-spacing:.04em;text-transform:uppercase;color:var(--muted);cursor:pointer;user-select:none}
+th.l,td.l{text-align:left}
+th[aria-sort]{color:var(--accent)}
+td.num{font-family:var(--f-num);font-variant-numeric:tabular-nums;font-size:13px}
+td.sc{color:var(--fg)}
+td.sc.none{color:var(--muted);font-family:var(--f-body);font-size:12px}
+td.desc{white-space:normal;min-width:240px}
+td.desc small{color:var(--muted);font-family:var(--f-num);font-size:11px}
+td.used{font-weight:600}
+td.tr{color:var(--transit);font-weight:600}
+tr.zero td{color:var(--muted)}
+td.buy{font-weight:600;color:var(--accent)}
+.pill{display:inline-block;padding:2px 8px;border-radius:99px;font-size:12px;font-weight:600}
+.p-crit{background:var(--crit-bg);color:var(--crit)} .p-warn{background:var(--warn-bg);color:var(--warn)}
+.p-ok{background:var(--ok-bg);color:var(--ok)} .p-over{background:var(--accent-soft);color:var(--accent)} .p-none{color:var(--muted)}
+.p-tr{background:var(--transit-bg);color:var(--transit)}
+.emp,.tag{font-size:11px;font-weight:600;padding:1px 6px;border-radius:4px;border:1px solid var(--line);color:var(--muted)}
+.tag{border-color:var(--accent);color:var(--accent)}
+tfoot td{font-weight:700;border-top:2px solid var(--fg);border-bottom:0}
+.notes{color:var(--muted);font-size:13.5px;max-width:100ch;display:grid;gap:6px}
+.notes b{color:var(--fg)}
+.copy{font:600 13px var(--f-body);padding:7px 12px;border-radius:6px;border:1px solid var(--accent);background:transparent;color:var(--accent);cursor:pointer}
+.copy:hover{background:var(--accent-soft)}
+.copy.xls{background:var(--accent);color:var(--surface)}
+.copy.xls:hover{background:var(--accent);opacity:.9}
+.copy:disabled{opacity:.5;cursor:default}
+#xlsmsg,#objMsg{font-size:13px;color:var(--muted)}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.tabs button{font:600 15px var(--f-body);padding:10px 16px;border:0;border-bottom:3px solid transparent;background:transparent;color:var(--muted);cursor:pointer;margin-bottom:-1px}
+.tabs button[aria-selected="true"]{color:var(--accent);border-bottom-color:var(--accent)}
+.tabs button:hover{color:var(--fg)}
+.tab{display:grid;gap:22px}
+h2{font:700 18px var(--f-display);margin:0}
+.bar{position:relative;height:14px;border-radius:99px;background:var(--line);overflow:hidden}
+.bar>span{position:absolute;inset:0 auto 0 0;background:var(--accent);border-radius:99px}
+.bar>i{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--transit)}
+.barlbl{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums;flex-wrap:wrap;gap:8px}
+.obj-tables{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,460px),1fr));gap:22px;align-items:start}
+.obj-tables>div{display:grid;gap:10px;min-width:0}
+.tablebox table.small{min-width:0}
+.kpi.over{background:var(--ok-bg);border-color:transparent}
+.kpi.over .v{color:var(--ok)}
+input#objTn{width:120px}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Proveedor 101 · Georgalos Hnos. S.A.I.C.A.</div>
+    <h1>Compras Georgalos</h1>
+  </header>
+
+  <nav class="tabs" role="tablist" aria-label="Secciones">
+    <button type="button" role="tab" id="t-sug" aria-controls="tab-sug" aria-selected="true">Sugerido de compra</button>
+    <button type="button" role="tab" id="t-obj" aria-controls="tab-obj" aria-selected="false">Objetivo mensual</button>
+  </nav>
+
+  <section class="tab" id="tab-sug" role="tabpanel" aria-labelledby="t-sug">
+    <p class="sub">Stock de hoy 04/11/2026 (depósitos 0 y 10), que ya incluye lo recibido de Georgalos hasta el 03/11. No hay pedidos pendientes de entrega. Venta del 07/10 al 03/11: 24 días hábiles de lunes a sábado. Objetivo: cubrir <b id="hdias">14</b> días <span id="htipo">corridos</span>. El costo sale del costo por bulto cargado en Gescom.</p>
+
+  <div class="controls">
+    <div class="ctl"><label for="dias">Días de stock</label><input type="number" id="dias" min="1" max="90" value="14"></div>
+    <div class="ctl"><label for="tipo">Contados como</label>
+      <select id="tipo"><option value="cor" selected>Días corridos</option><option value="hab">Días hábiles (lun a sáb)</option></select></div>
+    <div class="ctl"><label for="base">Venta diaria según</label>
+      <select id="base">
+        <option value="disp">Días con stock (corrige quiebres)</option>
+        <option value="max">La mayor entre 28 y 14 días</option>
+        <option value="28">Promedio 24 días hábiles</option>
+        <option value="14">Promedio últimos 12 días hábiles</option>
+      </select></div>
+    <div class="ctl"><label for="emp">Empresa</label>
+      <select id="emp"><option value="">Todas</option><option value="1">1 · Tienda Perfecta</option><option value="2">2 · Rambla</option></select></div>
+    <div class="ctl"><span class="lbl">Opciones</span>
+      <label class="chk"><input type="checkbox" id="transito" checked> Descontar lo pendiente de entrega</label>
+      <label class="chk"><input type="checkbox" id="bultos" checked> Redondear a bultos cerrados</label>
+      <label class="chk"><input type="checkbox" id="solo" checked> Sólo artículos a pedir</label></div>
+    <div class="actions">
+      <span id="xlsmsg" aria-live="polite"></span>
+      <button class="copy xls" id="xls" type="button" hidden>Exportar a Excel</button>
+      <button class="copy" id="copy" type="button">Copiar pedido</button>
+    </div>
+  </div>
+
+  <section class="kpis" id="kpis"></section>
+
+  <div class="tablebox">
+    <table>
+      <thead><tr id="thead"></tr></thead>
+      <tbody id="tbody"></tbody>
+      <tfoot><tr id="tfoot"></tr></tfoot>
+    </table>
+  </div>
+
+  <div class="notes">
+    <div><b>Nota Hermes del 05/10.</b> La mayor parte llegó el 15/10 y otra parte con las facturas del 27 y 28/10: Flynn Paff Tutti Frutti, Mantecol Obleas, Full Mani 90 g, Toddy Alfajor Mousse, Alfajor Full Mani y Toddy Cacao Avellanas ya tienen stock o venta. Nunca llegaron 5 artículos, 32 cajas y unos $1,3 M sin IVA: Flynn Paff Pinta Lengua y XXL, Alfajor Toddy Triple Mousse, Full Mani 150 g y Full Mani Relleno. Se dieron de baja el 03/11 y ya no se descuentan: el sugerido los pide de nuevo si tienen venta.</div>
+    <div><b>Costos nuevos.</b> Gescom actualizó el costo de varios artículos desde el 20/10: suben Mantecol Obleas (+15%), Toddy Alfajor Mousse y Mousse Blanco (+12,5%), Colmenitas (+12,5%), Mantecol Cubanito y Oblea display (+9% y +11%), Alfajores Mantecol (+8%) y Alfajor Full Mani (+8%); bajan Flynn Paff Tutti Frutti, Banana, Frutilla y Manzana (−3%). Toddy Chocolate Aireado pasó de $59.255 a $84.650 por bulto (+43%), igual que el Toddy Milk: conviene confirmarlo con Georgalos.</div>
+    <div><b>Código de Georgalos.</b> Sale de la lista de precios de la nota Hermes (septiembre 2026). Cada código se cruzó con el de Gescom y se verificó que el costo por bulto coincidiera con esa lista. Los artículos que no están en esa lista (budines, turrones, almendras, línea de Pascua) quedan "sin código".</div>
+    <div><b>Kilos.</b> Peso bruto por caja de la planilla de datos logísticos de Georgalos 2026, pasado a kilos por bulto de Gescom y multiplicado por las unidades a pedir. Lenguetazo y Balde Mantecol usan el peso neto, porque la planilla no trae el bruto. Los artículos que no están en la planilla (budines, turrones, almendras, conf. infantiles, pan dulce, línea HP) usan un peso neto estimado con los gramos de la descripción; en la tabla llevan un asterisco. En la planilla, Alfajores Mantecol, Toddy Alfajor Triple y Mantecol Oblea traen el peso en gramos en vez de kilos: se pasaron a kilos.</div>
+    <div><b>Unidades por bulto mal cargadas en Gescom.</b> Alfajor Mantecol simple (1012644) figura con 20 unidades por bulto y el triple (1012646) con 24; Georgalos dice 24 y 20. Las barras Flow Granola con Chocolate (2000), Almendras (2023) y Almendras con Piso de Chocolate (22024) figuran con 6 por bulto, pero el costo del bulto es el de un display de 20 barras: con 6, el costo por barra salía 3,3 veces más alto que el real. El tablero usa 24, 20 y 20; conviene corregirlo en Gescom.</div>
+    <div><b>Venta diaria.</b> Unidades vendidas (VEN, sin los reversos DEV-RE, las tres empresas) divididas por días hábiles. Con "Días con stock" se divide sólo por los días hábiles en que el artículo estuvo disponible: desde su primera venta del período hasta el 03/11 si tiene stock o pendiente, o hasta su última venta si está en cero, con un mínimo de 6 días. Con días corridos, 14 días equivalen a 12 días hábiles de venta. Los códigos recodificados (2376, 2645, 2528, 2524, 2828) suman su venta en el código nuevo.</div>
+    <div><b>Venta mayorista puntual.</b> El 03/11 entraron 98 bultos de Mantecol 404 g (remito 601) y el mismo día se vendieron completos a Ni Youyong: 2.352 unidades, $13,6 M, facturados el 04/11. Esa venta no cuenta en la venta diaria, porque sola triplicaría la necesidad del artículo. El stock de 1.274 unidades que muestra el tablero es el libre, sin lo reservado para ese pedido.</div>
+  </div>
+  </section>
+
+  <section class="tab" id="tab-obj" role="tabpanel" aria-labelledby="t-obj" hidden>
+    <p class="sub">Toneladas de Georgalos recibidas en el mes contra el objetivo de compra. Cuenta la mercadería que ingresó con remito dentro del mes, aunque se haya pedido el mes anterior. Remitos de Gescom al <span id="recAl"></span>.</p>
+
+    <div class="controls">
+      <div class="ctl"><label for="objMes">Mes</label><select id="objMes"></select></div>
+      <div class="ctl"><label for="objTn">Objetivo del mes (toneladas)</label><input type="number" id="objTn" min="0" step="0.1" inputmode="decimal" placeholder="Ej. 9,5"></div>
+      <div class="actions">
+        <span id="objMsg" aria-live="polite"></span>
+        <button class="copy xls" id="objSave" type="button">Guardar objetivo</button>
+      </div>
+    </div>
+
+    <section class="kpis" id="objKpis"></section>
+
+    <div>
+      <div class="bar" id="objBar" role="img"><span></span><i hidden></i></div>
+      <div class="barlbl" id="objBarLbl"></div>
+    </div>
+
+    <div class="obj-tables">
+      <div>
+        <h2>Remitos recibidos en el mes</h2>
+        <div class="tablebox"><table class="small">
+          <thead><tr><th class="l">Fecha</th><th class="l">Remito</th><th>Artículos</th><th>Kg</th><th>Importe sin IVA</th></tr></thead>
+          <tbody id="remBody"></tbody><tfoot><tr id="remFoot"></tr></tfoot>
+        </table></div>
+      </div>
+      <div>
+        <h2>Por artículo</h2>
+        <div class="tablebox"><table class="small">
+          <thead><tr><th class="l">Cód. Gescom</th><th class="l">Artículo</th><th>Bultos</th><th>Kg</th><th>% del mes</th></tr></thead>
+          <tbody id="artBody"></tbody>
+        </table></div>
+      </div>
+    </div>
+
+    <div class="notes">
+      <div><b>Qué cuenta como recibido.</b> Los remitos de ingreso de Georgalos (REMI-I) cargados en Gescom dentro del mes, por su fecha de carga, que coincide con el día en que llegó la mercadería. Las facturas no se suman porque repiten cada remito, y las notas de crédito y facturas de ajuste no traen mercadería.</div>
+      <div><b>Kilos.</b> Bultos recibidos por el peso bruto por bulto de la planilla de datos logísticos de Georgalos, el mismo que usa el sugerido de compra.</div>
+      <div><b>Objetivo.</b> Se guarda por mes en este tablero y lo ven todos los que lo abren. Lo pueden cambiar quienes tienen permiso de edición. Los días hábiles que quedan cuentan de lunes a sábado, sin feriados.</div>
+      <div><b>Actualización.</b> Los remitos se traen de Gescom cuando se actualiza el tablero; lo recibido después del <span id="recAl2"></span> todavía no figura.</div>
+    </div>
+  </section>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+// [codigo, empresa, descripcion, costoBulto, unidadesPorBulto, stock 04/11, venta 07/10-03/11, venta 21/10-03/11, clientes, primera venta, última venta, recodificado] · sin la venta mayorista del 03/11 de 2352 u de 27000 a Ni Youyong
+const D=[
+["26400","2","MANTECOL CLASICO X 111GR",58443.77,40,2693,13533,7249,234,"10-07","11-03"],
+["2343","2","TODDY GALLE CHISPA CHOCO X 126GR",30075.43,24,3888,5208,2017,316,"10-07","11-03"],
+["26800","2","MANTECOL CLASICO X 253GR",106905.26,36,2322,5052,3623,45,"10-12","11-03"],
+["2340","2","TODDY CACAO X 180GR",10830.05,12,1302,3442,2396,253,"10-07","11-03"],
+["1012645","2","MANTECOL GALLETAS OBLEAS 40UX85G",31878,40,0,2010,2003,60,"10-13","11-02",1],
+["22024","2","FLOW CEREAL ALMEN C/PISO DE CHOC XUNIDAD",9531.57,20,1317,1398,547,178,"10-08","11-03"],
+["2017","1","FLOW CEREAL FRUTOS ROJOS YOGURT LIGHT XUNIDAD",8059.59,20,1506,1286,642,170,"10-14","11-03"],
+["1012646","2","ALFAJOR MANTECOL TRIPLE X20",16795.24,20,58,1259,638,69,"10-19","11-03"],
+["1012644","2","ALFAJOR MANTECOL SIMPLE X24",12035.1,24,64,1241,875,83,"10-07","11-03"],
+["1013776","1","ALMENDRAS CON CHOCOLATE 24X80 GR",37027.09,24,618,996,536,48,"10-07","11-03"],
+["2000","2","FLOW CEREAL GRANOLA C/CHOCOLATE XUNIDAD",8059.59,20,869,980,396,148,"10-07","11-03"],
+["1011210","2","TURRON DE MANI C/MIEL 24X120GR",18308.66,24,1966,823,382,23,"10-08","11-03"],
+["2023","2","FLOW CEREAL ALMEN/MANI/MIEL XUNIDAD",9531.57,20,1729,723,310,115,"10-07","11-03"],
+["27000","2","MANTECOL CLASICO X 404GR",101680.04,24,1274,584,43,26,"10-07","10-23"],
+["1013780","2","BOLITA CEREAL BAÑO/CHOCO 24X80GR",32397.75,24,1591,552,270,35,"10-08","11-03"],
+["3790","1","GEO CONF INFANTILES FTAS 36UX80GR",49467.24,36,4868,489,360,22,"10-08","11-03"],
+["1012357","2","TODDY ALFAJOR MOUSSE X 50GR",14302.13,24,178,462,462,43,"10-29","11-03"],
+["25800","2","PALITOS DE LA SELVA X 660GR",68222.77,12,0,446,306,163,"10-07","11-03"],
+["273","2","FLYNN PAFF TUTTI-FRUTTI DISP X 70U",46560.25,12,225,368,360,172,"10-07","11-03"],
+["10102348","1","TODDY GALLETA MINI X 50GR",18819.57,36,24,355,293,23,"10-16","10-27"],
+["1012376","2","TODDY GALLETAS OBLEAS MOUSSE 40UX85G",27720,40,2,354,0,30,"10-07","10-15",1],
+["1012519","2","ALFAJOR FULL MANI PASTA DE MANI 24UX40G",10305.68,24,303,303,303,17,"10-29","11-03"],
+["1011984","2","MANTECOL ALMOHADITAS 16UX180G",27938.68,16,80,296,136,47,"10-19","11-03"],
+["1013413","2","GEO TURRON MANI MIEL 12X280GR",21104.75,12,1008,260,249,10,"10-08","11-03"],
+["1012363","2","TODDY ALFAJOR BLANCO MOUSSE 24UX50G",14302.13,24,2,238,119,25,"10-19","11-02"],
+["1011354","1","TURRON DE MANI BLANDO X 130GR",23510.16,20,2113,217,108,15,"10-08","11-03"],
+["1207","1","TABLETA CROCANTE DE MANI 24X150GR",30470.38,24,1858,212,138,10,"10-13","11-03"],
+["1012359","2","TODDY CACAO AVELLANAS X 150GR",10830.05,12,3,201,180,15,"10-19","10-28"],
+["1011982","2","FLYNN PAFF CEREAL CARAMELO 16X200G",26152.28,16,95,179,81,32,"10-07","11-03"],
+["10143901","2","DISPLAY LENGUETAZO T FRUTTI X 32U",78953.49,18,81,172,93,93,"10-07","11-03"],
+["2341","2","TODDY CACAO X 360GR",25168.99,14,3,140,140,9,"10-30","11-02"],
+["1963","2","TODDY CERE BOLITA DE CHOCO X 200GR",27938.68,16,91,140,80,20,"10-07","11-03"],
+["1011264","1","BUDIN GEO \"MARMOLADO\" X250GR",23144.36,12,442,129,56,27,"10-07","11-02"],
+["1011962","2","GRANOLA 5 SEMILLAS FLOW X 320GR",48610.1,20,36,126,65,30,"10-09","11-03"],
+["1011954","2","GRANOLA C/PASAS FLOW X320GR",48610.1,20,68,117,59,28,"10-13","10-31"],
+["2265","2","FLYNN PAFF BANANA DISP X 70U",46560.25,12,76,113,40,81,"10-07","11-03"],
+["285","2","FLYNN PAFF FRUTILLA DISP X 70U",46560.25,12,270,111,47,92,"10-07","11-03"],
+["1012643","2","MANTECOL CUBANITO 12X40",83708.24,12,41,106,48,76,"10-07","11-02"],
+["1011262","1","BUDIN GEORGALOS \"CLASICO\" X 250GR",23144.36,12,499,105,36,17,"10-07","11-02"],
+["1011983","2","GRANOLA CHOCO FLOW X 320GR",48610.1,20,67,92,44,21,"10-09","11-02"],
+["1012528","2","FULL MANI CHOCOLATE 8UX500G",52244.5,8,2,84,67,15,"10-09","10-30",1],
+["1012517","2","FULL MANI CHOCOLATE 8DX15UX30G",70437.6,8,15,72,57,59,"10-19","11-03"],
+["10131103","2","CHICLE BAZOOKA T.FRUTTI DISP 80U",68580.05,18,4,67,27,58,"10-07","11-03"],
+["1012524","2","TODDY CUBANITO 12DX40UX10G",76796.72,12,0,63,59,21,"10-19","10-26",1],
+["1012508","2","FULL MANI CHOCOLATE 6DX10UX90G",79093.63,6,0,63,62,53,"10-07","11-03"],
+["1012642","2","OBLEA MANTECOL DISPLAY X18U",65603.23,8,1,62,38,34,"10-19","11-03"],
+["513","2","CHOCOLATIN GEO BLANCO DISP X 40U",64751.19,12,0,61,16,22,"10-14","10-28"],
+["284","2","FLYNN PAFF MANZANA DISP X 70G",46560.25,12,48,58,29,47,"10-07","11-03"],
+["10125801","2","PALITOS DE LA SELVA BOLSITA X150GR",56540.33,44,1,53,46,10,"10-20","10-28"],
+["63900","2","MANTECOL CLASICO DISPLAY X 12U X41G",66708.41,8,0,49,32,34,"10-08","11-03"],
+["64200","2","MANTECOL BARRA CLASI DISP X 9U X 64GR",58592.42,8,1,42,0,38,"10-14","10-19"],
+["296","2","FLYNN PAFF PINTA LENGUA DISP X 70U",48000.26,12,21,37,0,35,"10-15","10-20"],
+["1012827","2","FLYNN PAFF JELLY BEANS 12X12",40471.97,12,1,36,29,10,"10-19","10-27"],
+["380","2","TURRON DE MANI 50U X 25G",7573.72,50,27,35,0,2,"10-09","10-20"],
+["2421","2","COLMENITA CHOC BLANC 12D X 24U X 25G",135170.34,12,23,31,14,26,"10-07","11-03"],
+["1012637","2","MANTECOL BAÑADO C/CHOCO DISPX18U",104009.06,12,27,28,4,21,"10-19","11-03"],
+["1012497","2","KIT SIN AZUCARES EXHIBIDOR",24972.95,1,0,25,19,14,"10-19","10-31"],
+["1011988","2","FLOW CEREAL HONEY CRUNCH 16X180G",19557.08,16,0,24,0,6,"10-07","10-13"],
+["1013773","2","MANI CON CHOCO 36X80GR",32375.33,36,13,24,0,5,"10-15","10-17"],
+["2419","2","COLMENITA CHOC C/LECHE 12D X 24U X 25G",135170.34,12,35,23,12,21,"10-07","11-03"],
+["1012513","2","TODDY CHOCOLATE COOKIES-CREAM D.X10",76184.96,6,0,22,13,20,"10-19","11-02"],
+["3955","2","PAN DULCE CON CHIPS 400G",29290.51,8,149,20,14,8,"10-12","11-01"],
+["1012511","2","TODDY CHOCOLATE MOUSE D. X 10U",76184.96,6,1,20,13,20,"10-09","10-28"],
+["1012512","2","TODDY CHOCOLATE MILK D. X 10U",84649.95,6,14,20,9,18,"10-07","11-03"],
+["2961","2","CHUP FLYNN TUTTIFRUTTI DISP X 24U",56470.49,18,0,18,1,16,"10-14","10-26"],
+["2963","1","CHUPETIN FLYNN CEREZA DISP X 24U",56470.49,18,0,18,9,17,"10-19","10-26"],
+["1012636","2","MANTECOL LINGOTE",54729.29,8,5,14,1,4,"10-08","10-28"],
+["67700","2","BALDE MANTECOL 3.4K ALMENDRAS",42691.88,1,0,13,5,7,"10-13","10-31"],
+["266","2","FLYNN PAFF UVA DISPLAY X 70U",48000.26,12,0,13,2,13,"10-07","10-23"],
+["1011805","2","TODDY CHOCOLATE AIREADO MIX D.X10",84649.95,6,3,13,8,13,"10-08","11-03"],
+["1013957","2","PAN DULCE S/FRUTA GEOR X400GR",23260.41,8,183,13,7,4,"10-12","10-28"],
+["63600","2","MANTECOL BOCADO DISP X 16UX26G",61634,8,0,8,0,7,"10-19","10-20"],
+["1012510","2","FULL MANI CHOCOLATE 20UX150G",41983.48,20,193,6,6,1,"11-03","11-03"],
+["1012828","2","FLYNN PAFF JELLY BEANS ACIDO XTREMO 12X12X40G",68802.35,12,103,3,0,3,"10-07","10-20",1],
+["2810","2","FLYNNPAFF XXL TUTTI DISP 24U",64902.53,12,36,2,0,2,"10-07","10-10"],
+["1013201","2","HP MANTECOL C/BOCADITOS X 200GR",141126.56,15,1,1,0,1,"10-19","10-19"],
+["1013219","2","HP TODDY MINI COOKIES X 126GR",100286.42,18,97,1,0,1,"10-19","10-19"],
+["1014943","2","LENGUETAZO PINTA LENGUA FRAMBUESA",55139.7,18,1,1,1,1,"10-31","10-31"],
+["2968","2","CHUP FLYNN SAND/MELON DISP 24U",56470.49,18,0,1,1,1,"10-26","10-26"],
+["10143908","2","CAR FULLMINT MENTA DISP X12U",47785.2,24,5,0,0,0],
+["3245","2","HP GEOR C/CONF DE CHOCO X 22GR",45191.54,6,56,0,0,0],
+["10143911","2","CAR FULLMINT MENTA STRONG DISP X 12",47785.2,24,1,0,0,0],
+["1013261","2","HP TODDY CON CONFITES DISPX12UX22G",51352.07,6,91,0,0,0],
+["282","2","CONFI FLYNNPAFF 30U X 50G",16436.42,30,1,0,0,0],
+["2993","2","FLYNNIES SURTIDOS DISP X 200U",59594.15,12,1,0,0,0],
+["1012507","2","FULL MANI RELLENO 6X10X110G",79093.63,6,1,0,0,0],
+["3772","1","GARRAPIÑADA DE MANI X 100GR",4790.16,36,4,0,0,0],
+["1013205","2","HP MANTECOL ESTUCHE 5UX700GR",78090.36,5,46,0,0,0],
+["1013203","2","HP MANTECOL CONFITES D. X12UX22GR",51352.07,6,5,0,0,0],
+["2994","2","FLYNNIES YOGHURT DISP X 200U",59594.15,12,1,0,0,0],
+["1012375","2","ALFAJOR TODDY TRIPLE MOUSSE",15550.92,20,0,0,0,0]
+];
+// Mercadería recibida de Georgalos: remitos de ingreso (REMI-I) por fecha de carga en Gescom. Las facturas no se suman: repiten los remitos.
+// [fecha carga, nro remito, fecha comprobante, comentario, [[cod Gescom, cantidad, unidad, kg, importe sin IVA], ...]] · datos de Gescom al 04/11/2026
+const REC_AL="04/11/2026";
+const REC=[
+ ["2026-10-02",562,"2026-09-29","RECIBIDO 2/10",[["27000",50.00,"Pack",520.0,6151642.42]]],
+ ["2026-10-14",568,"2026-10-09","",[["64200",2.00,"Pack",10.1,141793.66],["513",2.00,"Pack",8.4,156697.88]]],
+ ["2026-10-14",569,"2026-10-09","",[["27000",20.00,"Pack",208.0,2460656.97]]],
+ ["2026-10-14",570,"2026-10-09","",[["2961",1.00,"Pack",8.8,68329.29]]],
+ ["2026-10-14",571,"2026-10-09","",[["64200",3.00,"Pack",15.1,212690.48],["513",3.00,"Pack",12.6,235046.82],["296",3.00,"Pack",23.6,174240.94],["2017",138.00,"Blister",80.5,1345790.34]]],
+ ["2026-10-19",575,"2026-10-15","",[["1012643",4.00,"Pack",24.2,371696.12],["2963",1.00,"Pack",8.8,68329.29],["2340",200.00,"Pack",464.0,2620872.1],["1012513",3.00,"Pack",12.1,276551.4],["1012642",3.00,"Pack",13.9,215459.99],["1012828",7.00,"Pack",46.9,582755.9],["1011984",10.00,"Pack",33.0,338058.03],["1012511",3.00,"Pack",12.1,276551.4],["63900",2.00,"Pack",9.1,161434.35],["1012637",2.00,"Pack",10.0,251701.93],["1012827",3.00,"Pack",20.1,146913.25],["63600",1.00,"Pack",3.9,74577.14],["1012497",10.00,"Unidad",9.2,285385.28],["1012528",10.00,"Pack",42.3,632158.45],["1012646",30.00,"Pack",40.3,564498.4],["10125801",1.00,"Pack",8.6,68413.8],["1012363",5.00,"Pack",6.7,76913.71],["1012524",5.00,"Pack",30.0,464620.16],["1012644",30.00,"Pack",32.2,404506.87],["25800",15.00,"Pack",129.0,1238243.28],["10102348",10.00,"Pack",22.4,227716.8],["1012517",10.00,"Pack",36.5,852294.96]]],
+ ["2026-10-19",576,"2026-10-15","",[["1012636",1.00,"Pack",4.5,66222.44],["26800",50.00,"Pack",472.0,6467768.23],["26400",168.00,"Pack",789.9,11880449.57]]],
+ ["2026-10-23",580,"2026-10-19","RECIBIDO 23/10",[["273",20.00,"Pack",157.0,1161606.29],["1012508",10.00,"Pack",60.5,957032.92],["1012359",15.00,"Pack",29.4,196565.41]]],
+ ["2026-10-29",586,"2026-10-27","",[["1012645",30.00,"Pack",112.2,1006236],["1012519",15.00,"Pack",16.0,173198.37],["1012357",15.00,"Pack",24.5,230741.13]]],
+ ["2026-10-30",590,"2026-10-28","llegó 30/10",[["1012519",10.00,"Pack",10.7,124698.73],["1012646",25.00,"Pack",33.6,508056.01],["1011982",6.00,"Pack",23.4,189865.55],["25800",20.00,"Pack",172.0,1650991.03],["1012357",15.00,"Pack",24.5,259583.66],["1012512",4.00,"Pack",16.1,409705.76],["1012645",20.00,"Pack",74.8,771447.6],["1963",5.00,"Pack",19.5,169029.01],["285",20.00,"Pack",157.0,1126758.05],["2343",250.00,"Pack",860.0,9097817.57],["1012497",15.00,"Unidad",13.7,453259.04],["1012644",30.00,"Pack",32.2,436874.13],["1011962",2.00,"Pack",13.8,117636.44],["284",7.00,"Pack",55.0,394365.32],["2341",10.00,"Pack",53.3,304544.78],["63900",4.00,"Pack",18.3,322868.7],["2421",3.00,"Pack",24.2,490668.33],["1012643",2.00,"Pack",12.1,202573.94],["1011954",3.00,"Pack",20.4,176454.66],["273",30.00,"Pack",235.5,1690137.08],["1011984",4.00,"Pack",13.2,135223.21],["1011805",2.00,"Pack",6.8,204852.88],["2419",4.00,"Pack",32.3,654224.45],["1012642",5.00,"Pack",23.2,396899.54],["2265",10.00,"Pack",78.5,563379.02],["1011983",4.00,"Pack",27.2,235272.88],["10143901",7.00,"Pack",52.5,668736.06],["1012363",5.00,"Pack",6.7,86527.89]]],
+ ["2026-10-30",591,"2026-10-28","llegó 30/10",[["2340",175.00,"Pack",406.0,2293263.09]]],
+ ["2026-10-30",592,"2026-10-28","",[["67700",5.00,"Unidad",17.0,258285.87],["26800",77.00,"Pack",726.9,9960363.07]]],
+ ["2026-10-30",593,"2026-10-28","llegó 30/10",[["26400",70.00,"Pack",329.1,4950187.32],["26800",70.00,"Pack",660.8,9054875.52]]],
+ ["2026-11-03",601,"2026-10-28","",[["27000",98.00,"Pack",1019.2,12057219.14]]]
+];
+// Código de Georgalos (lista de precios de la nota Hermes, septiembre 2026) por código de Gescom
+const SC={"26400":"76222018126400","2343":"2343","26800":"76222018126800","2340":"2340","1012376":"2376","27000":"76222018127000",
+ "1012644":"2644","1012646":"2646","1012645":"2645","2000":"2000","22024":"2024","2023":"2023","2017":"2017","10102348":"2348",
+ "25800":"76222018025800","1011984":"1984","273":"273","1012519":"2519","10143901":"76222018043901","1011982":"1982","1963":"1963",
+ "2265":"265","1012643":"2643","1012508":"2508","1011954":"1954","285":"285","1011962":"1962","1011983":"1983","284":"284",
+ "1012357":"2357","1012517":"2517","1012363":"2363","1012528":"2528","266":"266","296":"296","1011988":"1988","10131103":"76222018031103",
+ "1012642":"2642","1012637":"2637","63900":"76222018163900","2421":"2421","1012524":"2524","64200":"76222018164200","2810":"2810",
+ "513":"513","2419":"2419","1012512":"2512","1012510":"2510","1012359":"2359","10143908":"76222018043908","2968":"2968","1012511":"2511",
+ "1012497":"2497","2961":"2961D","1012636":"2636","380":"380","67700":"76222018167700","1012828":"2828","2963":"2963",
+ "1011805":"76222018050000","1012375":"2375","1012513":"2513","63600":"76222018163600","2341":"2341","1012827":"2827","1012507":"2507",
+ "10125801":"76222018025801","10127011":"76222018127011","10143911":"76222018043911","1960":"1960","282":"282","2993":"2993","2994":"2994"};
+// Pendiente de entrega de Georgalos: cajas por código de Gescom. Vacío desde el 03/11: lo que faltó de la nota Hermes 05/10 se dio de baja
+const TR={};
+const UPB_FIX={"1012644":"Gescom dice 20 por bulto","1012646":"Gescom dice 24 por bulto","2000":"Gescom dice 6 por bulto","2023":"Gescom dice 6 por bulto","22024":"Gescom dice 6 por bulto"};
+// Kilos por bulto de Gescom: [kg, origen] · b = peso bruto de la planilla de datos logísticos de Georgalos 2026,
+// n = peso neto de esa planilla (no trae el bruto), e = estimado con los gramos de la descripción (no está en la planilla)
+const KG={"26400":[4.702,"b"],"2343":[3.44,"b"],"26800":[9.44,"b"],"2340":[2.32,"b"],"1012645":[3.74,"b"],"1012646":[1.344,"b"],"22024":[0.698,"b"],"2017":[0.583,"b"],
+ "1012644":[1.075,"b"],"1013776":[1.92,"e"],"2000":[0.56,"b"],"2023":[0.698,"b"],"27000":[10.4,"b"],"1011210":[2.88,"e"],"1013780":[1.92,"e"],"1012376":[3.74,"b"],
+ "3790":[2.88,"e"],"25800":[8.6,"b"],"1012357":[1.636,"b"],"273":[7.851,"b"],"10102348":[2.24,"b"],"1011984":[3.3,"b"],"1012519":[1.07,"b"],"1012363":[1.344,"b"],
+ "1013413":[3.36,"e"],"1012359":[1.96,"b"],"1011354":[2.6,"e"],"1011982":[3.9,"b"],"1207":[3.6,"e"],"10143901":[7.5,"n"],"1963":[3.9,"b"],"2341":[5.33,"b"],
+ "1011264":[3,"e"],"1012643":[6.056,"b"],"1011954":[6.8,"b"],"1011262":[3,"e"],"1011962":[6.9,"b"],"1011983":[6.8,"b"],"2265":[7.851,"b"],"285":[7.851,"b"],
+ "1012528":[4.23,"b"],"10131103":[6.4,"b"],"1012517":[3.654,"b"],"1012508":[6.048,"b"],"1012524":[6,"b"],"513":[4.2,"b"],"1012642":[4.644,"b"],"10125801":[8.6,"b"],
+ "284":[7.851,"b"],"63900":[4.563,"b"],"64200":[5.032,"b"],"296":[7.851,"b"],"1011988":[3.28,"b"],"1012827":[6.7,"b"],"380":[1.51,"b"],"2421":[8.065,"b"],
+ "3955":[3.2,"e"],"1012497":[0.916,"b"],"1012637":[5,"b"],"2419":[8.065,"b"],"1013773":[2.88,"e"],"1012513":[4.032,"b"],"1012511":[4.032,"b"],"266":[7.851,"b"],
+ "1012512":[4.032,"b"],"1013957":[3.2,"e"],"2961":[8.84,"b"],"2963":[8.84,"b"],"1012636":[4.54,"b"],"67700":[3.4,"n"],"1011805":[3.4,"b"],"63600":[3.862,"b"],
+ "1012828":[6.7,"b"],"2810":[9.564,"b"],"1013201":[3,"e"],"1013219":[2.268,"e"],"1014943":[7.5,"n"],"2968":[8.84,"b"],"1012375":[1.344,"b"],"1012507":[7.392,"b"],
+ "1012510":[3,"b"],"1013203":[1.584,"e"],"1013205":[3.5,"e"],"1013261":[1.584,"e"],"10143908":[8.4,"b"],"10143911":[8.4,"b"],"282":[1.819,"b"],"2993":[8.09,"b"],
+ "2994":[8.09,"b"],"3245":[0.132,"e"],"3772":[3.6,"e"]};
+const KG_TXT={b:"bruto",n:"neto",e:"estimado"};
+
+// Días hábiles (lunes a sábado) entre dos fechas "MM-DD" de 2026, ambas incluidas
+function habiles(a,b){let n=0;const d=new Date(Date.UTC(2026,+a.slice(0,2)-1,+a.slice(3)));const e=new Date(Date.UTC(2026,+b.slice(0,2)-1,+b.slice(3)));
+  for(;d<=e;d.setUTCDate(d.getUTCDate()+1))if(d.getUTCDay()!==0)n++;return n}
+const H28=habiles("10-07","11-03"), H14=habiles("10-21","11-03"), FIN="11-03", MIN_DIAS=6;
+
+const $=id=>document.getElementById(id);
+const money=n=>"$ "+Math.round(n).toLocaleString("es-AR");
+const mill=n=>"$ "+(n/1e6).toLocaleString("es-AR",{maximumFractionDigits:1,minimumFractionDigits:1})+" M";
+const int=n=>Math.round(n).toLocaleString("es-AR");
+const dec=n=>n.toLocaleString("es-AR",{maximumFractionDigits:1,minimumFractionDigits:1});
+const dec2=n=>n.toLocaleString("es-AR",{maximumFractionDigits:2,minimumFractionDigits:2});
+const COLS=[
+ ["cod","Cód. Gescom","l"],["sc","Cód. Georgalos","l"],["desc","Artículo","l"],["stock","Stock u."],["tr","Pendiente u."],["d28","Vta/día 24 háb."],["d14","Vta/día 12 háb."],["ddisp","Vta/día c/stock"],
+ ["cob","Cobertura"],["estado","Estado","l"],["nec","Necesidad u."],["bul","Bultos"],["uni","Unid. a pedir"],["kg","Kg pedido"],["cu","Costo u."],["costo","Costo reposición"]
+];
+const BASECOL={"28":"d28","14":"d14","disp":"ddisp"};
+let sortKey="costo",sortDir=-1;
+try{const s=JSON.parse(localStorage.getItem("geo-ctl3")||"{}");if(s.dias)$("dias").value=s.dias;if(s.base)$("base").value=s.base;if(s.tipo)$("tipo").value=s.tipo}catch(e){}
+
+function calc(){
+  const dias=Math.max(1,+$("dias").value||14), base=$("base").value, tipo=$("tipo").value, round=$("bultos").checked, emp=$("emp").value, useTr=$("transito").checked;
+  $("hdias").textContent=dias; $("htipo").textContent=tipo==="hab"?"hábiles":"corridos";
+  try{localStorage.setItem("geo-ctl3",JSON.stringify({dias,base,tipo}))}catch(e){}
+  // Días corridos → hábiles equivalentes (6 de cada 7)
+  const diasHab=tipo==="hab"?dias:dias*6/7;
+  return D.filter(r=>!emp||r[1]===emp).map(([cod,e,desc,cb,upb,stock,u28,u14,cli,f1,f2,rec])=>{
+    const trCajas=TR[cod]||0, trU=trCajas*upb, trUsed=useTr?trU:0;
+    const d28=u28/H28,d14=u14/H14;
+    let ndisp=0,ddisp=0;
+    if(u28>0){ndisp=Math.min(H28,Math.max(MIN_DIAS,habiles(f1,(stock+trU)>0?FIN:f2)));ddisp=u28/ndisp}
+    const d=base==="28"?d28:base==="14"?d14:base==="disp"?ddisp:Math.max(d28,d14);
+    const nec=d*diasHab, disp=stock+trUsed, falt=Math.max(0,nec-disp), cu=cb/upb;
+    const bul=round?Math.ceil(falt/upb-1e-9):falt/upb, uni=round?bul*upb:Math.ceil(falt);
+    const costo=round?bul*cb:uni*cu, cobH=d>0?disp/d:Infinity, cob=tipo==="hab"?cobH:cobH*7/6;
+    let estado,cls;
+    if(d===0){estado=trU>0?"Sin venta, pendiente":disp>0?"Sin venta":"—";cls=trU>0?"p-tr":"p-none"}
+    else if(disp<=0){estado="Sin stock";cls="p-crit"}
+    else if(cob<dias*0.5){estado="Crítico";cls="p-crit"}
+    else if(cob<dias){estado="Bajo";cls="p-warn"}
+    else if(cob>dias*4){estado="Sobrestock";cls="p-over"}
+    else {estado="Cubierto";cls="p-ok"}
+    const kgB=KG[cod]?KG[cod][0]:0, kgTipo=KG[cod]?KG[cod][1]:"", kg=uni*kgB/upb;
+    return {cod,sc:SC[cod]||"",e,desc,cb,upb,stock,tr:trU,trCajas,u28,u14,d28,d14,ddisp,ndisp,d,nec,bul,uni,kgB,kgTipo,kg,cu,costo,cob,estado,cls,cli,rec:!!rec};
+  });
+}
+function render(){
+  const all=calc(); const rows=($("solo").checked?all.filter(r=>r.uni>0):all).slice();
+  rows.sort((a,b)=>{let x=a[sortKey],y=b[sortKey];if(typeof x==="string")return x.localeCompare(y)*sortDir;
+    if(!isFinite(x))x=1e12;if(!isFinite(y))y=1e12;return (x-y)*sortDir});
+  const useTr=$("transito").checked;
+  const buy=all.filter(r=>r.uni>0), tot=buy.reduce((s,r)=>s+r.costo,0), bul=buy.reduce((s,r)=>s+r.bul,0);
+  const kgTot=buy.reduce((s,r)=>s+r.kg,0), kgEst=buy.filter(r=>r.kgTipo==="e").reduce((s,r)=>s+r.kg,0);
+  const quiebre=all.filter(r=>r.d>0&&r.stock+(useTr?r.tr:0)<=0).length, over=all.filter(r=>r.estado==="Sobrestock");
+  const overVal=over.reduce((s,r)=>s+Math.max(0,r.stock-r.nec)*r.cu,0), dias=+$("dias").value||14;
+  const trRows=all.filter(r=>r.trCajas>0), trCaj=trRows.reduce((s,r)=>s+r.trCajas,0), trVal=trRows.reduce((s,r)=>s+r.trCajas*r.cb,0);
+  const sinCod=buy.filter(r=>!r.sc).length;
+  $("kpis").innerHTML=`
+   <div class="kpi main"><span class="k">Pedido sugerido a costo (sin IVA)</span><span class="v">${money(tot)}</span><span class="n">Con IVA 21% estimado: ${money(tot*1.21)}</span></div>
+   <div class="kpi main"><span class="k">Peso del pedido</span><span class="v">${int(kgTot)} kg</span><span class="n">${kgEst?`${int(kgEst)} kg estimados por descripción`:"Todo con datos de Georgalos"} · ${money(kgTot?tot/kgTot:0)} por kg</span></div>
+   <div class="kpi"><span class="k">A pedir</span><span class="v">${int(bul)} bultos</span><span class="n">${buy.length} artículos · ${sinCod} sin código de Georgalos</span></div>
+   ${trRows.length?`<div class="kpi tr"><span class="k">Pendiente de entrega</span><span class="v">${int(trCaj)} cajas</span><span class="n">${trRows.length} artículos · ${mill(trVal)} sin IVA${useTr?"":" · no descontado"}</span></div>`:""}
+   <div class="kpi"><span class="k">Sin stock ni pendiente</span><span class="v" style="color:var(--crit)">${quiebre}</span><span class="n">artículos con venta en quiebre</span></div>
+   <div class="kpi"><span class="k">Sobrestock</span><span class="v">${money(overVal)}</span><span class="n">${over.length} artículos con más de ${int(dias*4)} días de stock</span></div>`;
+  const used=BASECOL[$("base").value];
+  $("thead").innerHTML=COLS.map(([k,t,c])=>`<th class="${c||""}" data-k="${k}" ${k===sortKey?`aria-sort="${sortDir>0?"ascending":"descending"}"`:""} tabindex="0">${t}${k===used?" ●":""}${k===sortKey?(sortDir>0?" ▲":" ▼"):""}</th>`).join("");
+  const cell=(k,v)=>`<td class="num${k===used?" used":""}">${v}</td>`;
+  $("tbody").innerHTML=rows.map(r=>`<tr class="${r.uni>0?"":"zero"}">
+   <td class="l num">${r.cod}</td>
+   <td class="l num sc${r.sc?"":" none"}">${r.sc||"sin código"}</td>
+   <td class="l desc">${r.desc} <span class="emp">${r.e==="1"?"TP":"Rambla"}</span>${r.rec?' <span class="tag">recodif.</span>':""}${UPB_FIX[r.cod]?` <span class="tag" title="${UPB_FIX[r.cod]}">x${r.upb} s/Georgalos</span>`:""}<br><small>bulto x${r.upb} · ${money(r.cb)} · ${r.kgB?`${dec2(r.kgB)} kg${r.kgTipo==="b"?"":" "+KG_TXT[r.kgTipo]}`:"sin peso"} · ${int(r.u28)} u. vendidas · ${r.cli} clientes${r.ndisp?` · ${r.ndisp} días c/stock`:""}</small></td>
+   <td class="num">${int(r.stock)}</td>
+   <td class="num tr">${r.tr?`${int(r.tr)}<br><small>${r.trCajas} cj</small>`:"—"}</td>
+   ${cell("d28",dec(r.d28))}${cell("d14",dec(r.d14))}${cell("ddisp",dec(r.ddisp))}
+   <td class="num">${isFinite(r.cob)?dec(r.cob)+" d":"—"}</td>
+   <td class="l"><span class="pill ${r.cls}">${r.estado}</span></td>
+   <td class="num">${int(r.nec)}</td><td class="num buy">${r.bul?int(r.bul):"—"}</td><td class="num">${r.uni?int(r.uni):"—"}</td>
+   <td class="num">${r.kg?dec(r.kg)+(r.kgTipo==="e"?"*":""):"—"}</td>
+   <td class="num">${money(r.cu)}</td><td class="num buy">${r.costo?money(r.costo):"—"}</td></tr>`).join("")
+   || `<tr><td colspan="15" class="l">No hay artículos para pedir con estos parámetros.</td></tr>`;
+  const vb=rows.reduce((s,r)=>s+r.bul,0),vu=rows.reduce((s,r)=>s+r.uni,0),vc=rows.reduce((s,r)=>s+r.costo,0),vt=rows.reduce((s,r)=>s+r.tr,0);
+  $("tfoot").innerHTML=`<td class="l" colspan="4">Total ${rows.length} artículos</td><td class="num">${int(vt)}</td><td colspan="6"></td><td class="num">${int(vb)}</td><td class="num">${int(vu)}</td><td class="num">${int(rows.reduce((s,r)=>s+r.kg,0))} kg</td><td></td><td class="num">${money(vc)}</td>`;
+}
+$("thead").addEventListener("click",e=>{const th=e.target.closest("th");if(!th)return;const k=th.dataset.k;
+  if(k===sortKey)sortDir=-sortDir;else{sortKey=k;sortDir=["cod","sc","desc","estado"].includes(k)?1:-1}render()});
+$("thead").addEventListener("keydown",e=>{if(e.key==="Enter")e.target.click()});
+["dias","base","tipo","bultos","solo","emp","transito"].forEach(id=>$(id).addEventListener("input",render));
+$("copy").addEventListener("click",()=>{
+  const rows=calc().filter(r=>r.uni>0).sort((a,b)=>b.costo-a.costo);
+  const txt="Cod Gescom\tCod Georgalos\tArticulo\tBultos\tUnidades\tKg\tCosto\n"+rows.map(r=>`${r.cod}\t${r.sc}\t${r.desc}\t${r.bul}\t${r.uni}\t${r.kg.toFixed(1).replace(".",",")}\t${Math.round(r.costo)}`).join("\n")
+    +`\n\t\tTOTAL\t${rows.reduce((s,r)=>s+r.bul,0)}\t${rows.reduce((s,r)=>s+r.uni,0)}\t${rows.reduce((s,r)=>s+r.kg,0).toFixed(1).replace(".",",")}\t${Math.round(rows.reduce((s,r)=>s+r.costo,0))}`;
+  const b=$("copy");
+  navigator.clipboard.writeText(txt).then(()=>{b.textContent="Copiado";setTimeout(()=>b.textContent="Copiar pedido",1500)})
+   .catch(()=>{b.textContent="No se pudo copiar"});
+});
+render();
+
+// Exportar a Excel: hoja "Pedido" (sólo lo que hay que pedir), "Pendiente" (lo que falta de la nota Hermes) y "Detalle" (todo el surtido)
+(async()=>{
+  let dl=null;
+  try{dl=await window.claude?.use?.("downloads")}catch(e){}
+  if(typeof XLSX==="undefined")return;
+  const btn=$("xls"),msg=$("xlsmsg");btn.hidden=false;
+  btn.addEventListener("click",async()=>{
+    const dias=Math.max(1,+$("dias").value||14),base=$("base").selectedOptions[0].text,tipo=$("tipo").selectedOptions[0].text,emp=$("emp").selectedOptions[0].text;
+    const all=calc().sort((a,b)=>b.costo-a.costo), buy=all.filter(r=>r.uni>0);
+    const r2=n=>Math.round(n*100)/100, r1=n=>Math.round(n*10)/10, empN=r=>r.e==="1"?"Tienda Perfecta":"Rambla";
+    const pedidoHead=["Cód. Gescom","Cód. Georgalos","Artículo","Empresa","Unid. por bulto","Bultos","Unidades","Kg por bulto","Kg pedido","Costo bulto","Costo unitario","Costo reposición","Origen del peso"];
+    const pedido=[["Pedido sugerido Georgalos · stock al 04/11/2026"],
+      [`Días de stock: ${dias} (${tipo}) · Venta diaria según: ${base} · Empresa: ${emp} · ${$("transito").checked?"Descontando lo pendiente de la nota Hermes 05/10":"Sin descontar lo pendiente"} · ${$("bultos").checked?"Redondeado a bultos":"Sin redondeo"}`],[],pedidoHead,
+      ...buy.map(r=>[r.cod,r.sc,r.desc,empN(r),r.upb,r.bul,r.uni,r.kgB||"",Math.round(r.kg*10)/10,r2(r.cb),r2(r.cu),r2(r.costo),KG_TXT[r.kgTipo]||"sin dato"])];
+    const n=pedido.length;
+    pedido.push(["","","Total sin IVA","","",{f:`SUM(F5:F${n})`},{f:`SUM(G5:G${n})`},"",{f:`SUM(I5:I${n})`},"","",{f:`SUM(L5:L${n})`}]);
+    pedido.push(["","","Total con IVA 21% (estimado)","","","","","","","","",{f:`L${n+1}*1.21`}]);
+    const trRows=all.filter(r=>r.trCajas>0).sort((a,b)=>b.trCajas*b.cb-a.trCajas*a.cb);
+    const tr=[["Pendiente de entrega · Nota de venta Hermes 05/10/2026 (no llegó al 03/11)"],[],["Cód. Gescom","Cód. Georgalos","Artículo","Cajas","Unidades","Costo bulto","Costo"],
+      ...trRows.map(r=>[r.cod,r.sc,r.desc,r.trCajas,r.tr,r2(r.cb),r2(r.trCajas*r.cb)])];
+    const m=tr.length; tr.push(["","","Total",{f:`SUM(D4:D${m})`},{f:`SUM(E4:E${m})`},"",{f:`SUM(G4:G${m})`}]);
+    const detHead=["Cód. Gescom","Cód. Georgalos","Artículo","Empresa","Recodificado","Stock unidades","Pendiente unidades","Venta 07/10-03/11","Venta 21/10-03/11","Vta/día 24 háb.","Vta/día 12 háb.","Días hábiles con stock","Vta/día con stock","Vta/día usada","Cobertura días","Estado","Necesidad unidades","Bultos","Unidades a pedir","Kg por bulto","Kg pedido","Costo unitario","Costo reposición","Clientes","Origen del peso"];
+    const det=[detHead,...all.map(r=>[r.cod,r.sc,r.desc,empN(r),r.rec?"Sí":"",r.stock,r.tr,r.u28,r.u14,r1(r.d28),r1(r.d14),r.ndisp||"",r1(r.ddisp),r1(r.d),isFinite(r.cob)?r1(r.cob):"",r.estado,Math.round(r.nec),r.bul,r.uni,r.kgB||"",Math.round(r.kg*10)/10,r2(r.cu),r2(r.costo),r.cli,KG_TXT[r.kgTipo]||"sin dato"])];
+    const wb=XLSX.utils.book_new(), fm="#,##0.00";
+    // Códigos como texto, para que Excel no convierta los EAN largos a notación científica
+    const txt=(ws,cols,from,to)=>{for(let i=from;i<=to;i++)cols.forEach(c=>{const x=ws[c+i];if(x&&x.v!==""){x.t="s";x.v=String(x.v)}})};
+    const s1=XLSX.utils.aoa_to_sheet(pedido);s1["!cols"]=[{wch:11},{wch:16},{wch:44},{wch:15},{wch:9},{wch:8},{wch:10},{wch:10},{wch:11},{wch:13},{wch:13},{wch:16},{wch:12}];
+    for(let i=5;i<=n+2;i++){["J","K","L"].forEach(c=>{const x=s1[c+i];if(x)x.z=fm});["H","I"].forEach(c=>{const x=s1[c+i];if(x)x.z="#,##0.0"})}txt(s1,["A","B"],5,n);
+    const s3=XLSX.utils.aoa_to_sheet(tr);s3["!cols"]=[{wch:11},{wch:16},{wch:44},{wch:8},{wch:10},{wch:13},{wch:16}];
+    for(let i=4;i<=m+1;i++)["F","G"].forEach(c=>{const x=s3[c+i];if(x)x.z=fm});txt(s3,["A","B"],4,m);
+    const s2=XLSX.utils.aoa_to_sheet(det);s2["!cols"]=[{wch:11},{wch:16},{wch:44},{wch:15},...Array(18).fill({wch:12})];
+    for(let i=2;i<=det.length;i++)["V","W"].forEach(c=>{const x=s2[c+i];if(x)x.z=fm});txt(s2,["A","B"],2,det.length);
+    s2["!autofilter"]={ref:`A1:Y${det.length}`};
+    XLSX.utils.book_append_sheet(wb,s1,"Pedido");if(trRows.length)XLSX.utils.book_append_sheet(wb,s3,"Pendiente");XLSX.utils.book_append_sheet(wb,s2,"Detalle");
+    const data=XLSX.write(wb,{bookType:"xlsx",type:"array"});
+    btn.disabled=true;msg.textContent="";
+    const filename=`Sugerido Georgalos ${dias} dias 2026-11-04.xlsx`;
+    // Fuera de claude.ai no hay capacidad de descargas: el navegador baja el archivo directo
+    if(!dl){XLSX.writeFile(wb,filename);btn.disabled=false;msg.textContent="Descargado";setTimeout(()=>{msg.textContent=""},3000);return}
+    try{await dl.save({filename,data});msg.textContent="Descargado"}
+    catch(e){const c=e&&e.code;
+      if(c==="declined")msg.textContent="";
+      else if(c==="rate_limited")msg.textContent="Esperá un momento y probá de nuevo";
+      else{msg.textContent="La descarga no está disponible acá";btn.hidden=true}}
+    finally{btn.disabled=false;setTimeout(()=>{msg.textContent=""},3000)}
+  });
+})();
+
+// ── Objetivo mensual: toneladas recibidas (remitos) contra el objetivo guardado en la base del tablero ──
+const MESES=["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+const DESC={};D.forEach(r=>{DESC[r[0]]=r[2]});
+const recAlISO=REC_AL.split("/").reverse().join("-");
+const OBJ={};let objDb=null,objDirty=false;
+$("recAl").textContent=REC_AL;$("recAl2").textContent=REC_AL;
+(function(){ // meses con remitos, el mes de los datos y el siguiente
+  const set=new Set(REC.map(r=>r[0].slice(0,7))),m=recAlISO.slice(0,7);set.add(m);
+  const [y,mm]=m.split("-").map(Number);set.add(mm===12?`${y+1}-01`:`${y}-${String(mm+1).padStart(2,"0")}`);
+  $("objMes").innerHTML=[...set].sort().reverse().map(k=>`<option value="${k}">${MESES[+k.slice(5)-1]} ${k.slice(0,4)}</option>`).join("");
+  $("objMes").value=m;
+})();
+// Días hábiles (lunes a sábado) que quedan del mes, desde mañana
+function habRestantes(mes){
+  const [y,m]=mes.split("-").map(Number),hoy=new Date(),fin=new Date(y,m,0),man=new Date(hoy.getFullYear(),hoy.getMonth(),hoy.getDate()+1);
+  let d=new Date(y,m-1,1);if(man>d)d=man;let n=0;for(;d<=fin;d.setDate(d.getDate()+1))if(d.getDay()!==0)n++;return n}
+const tn=kg=>(kg/1000).toLocaleString("es-AR",{minimumFractionDigits:2,maximumFractionDigits:2});
+const fec=s=>s.slice(8,10)+"/"+s.slice(5,7);
+function renderObj(){
+  const mes=$("objMes").value,mesN=MESES[+mes.slice(5)-1],rem=REC.filter(r=>r[0].startsWith(mes));
+  const kgR=r=>r[4].reduce((a,i)=>a+i[3],0),impR=r=>r[4].reduce((a,i)=>a+i[4],0);
+  const kgRec=rem.reduce((s,r)=>s+kgR(r),0),impRec=rem.reduce((s,r)=>s+impR(r),0);
+  const obj=OBJ[mes],objKg=obj!=null?obj*1000:null;
+  if(!objDirty&&document.activeElement!==$("objTn"))$("objTn").value=obj!=null?obj:"";
+  const sug=calc().filter(r=>r.uni>0).reduce((s,r)=>s+r.kg,0),dh=habRestantes(mes),cerrado=dh===0;
+  let k=`<div class="kpi main"><span class="k">Objetivo de ${mesN}</span><span class="v">${obj!=null?tn(objKg)+" t":"Sin cargar"}</span><span class="n">${obj!=null?int(objKg)+" kg":"Cargalo arriba y tocá Guardar objetivo"}</span></div>
+   <div class="kpi"><span class="k">Recibido en el mes</span><span class="v">${tn(kgRec)} t</span><span class="n">${rem.length} remito${rem.length===1?"":"s"} · ${money(impRec)} sin IVA${objKg?` · ${int(kgRec/objKg*100)}% del objetivo`:""}</span></div>`;
+  if(objKg!=null){const rest=objKg-kgRec;
+    k+=rest>0?`<div class="kpi"><span class="k">Falta para el objetivo</span><span class="v" style="color:var(--accent)">${tn(rest)} t</span><span class="n">${cerrado?"Mes cerrado":`${dh} días hábiles · ${tn(rest/dh)} t por día hábil`}</span></div>`
+      :`<div class="kpi over"><span class="k">Objetivo cumplido</span><span class="v">+${tn(-rest)} t</span><span class="n">por encima del objetivo</span></div>`;
+    if(!cerrado&&rest>0)k+=`<div class="kpi tr"><span class="k">Si entra el sugerido de hoy</span><span class="v">${tn(sug)} t</span><span class="n">${sug>=rest?`Cubre lo que falta y suma ${tn(sug-rest)} t más`:`Seguirían faltando ${tn(rest-sug)} t`}</span></div>`;
+  }else if(!cerrado)k+=`<div class="kpi tr"><span class="k">Sugerido de compra de hoy</span><span class="v">${tn(sug)} t</span><span class="n">Pestaña Sugerido de compra</span></div>`;
+  $("objKpis").innerHTML=k;
+  const bar=$("objBar"),fill=bar.querySelector("span"),mk=bar.querySelector("i");
+  if(objKg){const p=Math.min(kgRec/objKg,1),ps=Math.min((kgRec+sug)/objKg,1);
+    fill.style.width=(p*100)+"%";mk.hidden=cerrado||kgRec>=objKg;mk.style.left=`calc(${ps*100}% - 1px)`;
+    bar.setAttribute("aria-label",`Recibido ${tn(kgRec)} de ${tn(objKg)} toneladas`);
+    $("objBarLbl").innerHTML=`<span>Recibido ${tn(kgRec)} t · ${int(kgRec/objKg*100)}%</span>${mk.hidden?"":`<span style="color:var(--transit)">| con el sugerido: ${tn(kgRec+sug)} t</span>`}<span>Objetivo ${tn(objKg)} t</span>`;
+  }else{fill.style.width="0";mk.hidden=true;bar.setAttribute("aria-label","Sin objetivo cargado");$("objBarLbl").innerHTML=`<span>Recibido ${tn(kgRec)} t</span><span>Cargá el objetivo para ver el avance</span>`}
+  $("remBody").innerHTML=rem.length?rem.slice().reverse().map(r=>`<tr><td class="l num">${fec(r[0])}</td><td class="l">REMI-I ${r[1]}${r[3]?`<br><small style="color:var(--muted)">${r[3]}</small>`:""}</td><td class="num">${r[4].length}</td><td class="num">${int(kgR(r))}</td><td class="num">${money(impR(r))}</td></tr>`).join("")
+    :`<tr><td colspan="5" class="l" style="white-space:normal;color:var(--muted)">No hay remitos de Georgalos cargados en ${mesN} al ${REC_AL}.</td></tr>`;
+  $("remFoot").innerHTML=rem.length?`<td class="l" colspan="2">Total ${rem.length} remito${rem.length===1?"":"s"}</td><td class="num">${rem.reduce((s,r)=>s+r[4].length,0)}</td><td class="num">${int(kgRec)}</td><td class="num">${money(impRec)}</td>`:"";
+  const A={};rem.forEach(r=>r[4].forEach(([cod,cant,uni,kg])=>{const a=A[cod]||(A[cod]={cod,b:0,kg:0});a.b+=cant;a.kg+=kg}));
+  const arts=Object.values(A).sort((a,b)=>b.kg-a.kg);
+  $("artBody").innerHTML=arts.length?arts.map(a=>`<tr><td class="l num">${a.cod}</td><td class="l desc">${DESC[a.cod]||"—"}</td><td class="num">${int(a.b)}</td><td class="num">${int(a.kg)}</td><td class="num">${dec(a.kg/kgRec*100)}%</td></tr>`).join("")
+    :`<tr><td colspan="5" class="l" style="color:var(--muted)">Sin artículos recibidos.</td></tr>`;
+}
+$("objMes").addEventListener("change",()=>{objDirty=false;$("objMsg").textContent="";renderObj()});
+$("objTn").addEventListener("input",()=>{objDirty=true});
+["dias","base","tipo","bultos","solo","emp","transito"].forEach(id=>$(id).addEventListener("input",()=>{if(!$("tab-obj").hidden)renderObj()}));
+$("objSave").addEventListener("click",async()=>{
+  const msg=$("objMsg"),btn=$("objSave");if(!objDb)return;
+  const mes=$("objMes").value,raw=String($("objTn").value).replace(",",".").trim(),v=raw===""?null:Number(raw);
+  if(v!==null&&(!isFinite(v)||v<0)){msg.textContent="Ingresá las toneladas como número, por ejemplo 9,5.";return}
+  btn.disabled=true;msg.textContent="Guardando…";
+  try{const ref=objDb.doc("objetivos/"+mes);
+    if(v===null){await ref.delete();delete OBJ[mes]}
+    else{const t=Math.round(v*1000)/1000;await ref.set({toneladas:t,actualizado:new Date().toISOString()});OBJ[mes]=t}
+    objDirty=false;msg.textContent=v===null?"Objetivo borrado":"Objetivo guardado";
+  }catch(e){const c=e&&e.code;
+    msg.textContent=c==="invalid_argument"?"No tenés permiso para cambiar el objetivo; pedile acceso de edición al dueño del tablero."
+      :c==="unavailable"||c==="resource_exhausted"?"No se pudo guardar. Probá de nuevo en un momento.":"No se pudo guardar el objetivo."}
+  finally{btn.disabled=false;renderObj()}
+});
+(async()=>{
+  let db=null;try{db=await window.claude?.use?.("db")}catch(e){}
+  // Sin la base de claude.ai (copia publicada en otro sitio): objetivos guardados al 05/11/2026, sólo lectura
+  if(!db){Object.assign(OBJ,{"2026-10":4,"2026-11":10,"2026-12":11});renderObj();
+    $("objTn").disabled=true;$("objSave").disabled=true;$("objMsg").textContent="Objetivos guardados al 05/11/2026. Para cambiarlos, usá el tablero en claude.ai.";return}
+  objDb=db;
+  db.collection("objetivos").onSnapshot(s=>{for(const k in OBJ)delete OBJ[k];
+    s.docs.forEach(d=>{const v=d.data();if(v&&typeof v.toneladas==="number")OBJ[d.id]=v.toneladas});renderObj()},
+    ()=>{$("objMsg").textContent="No se pudo leer el objetivo guardado."});
+})();
+function showTab(id){const o=id==="obj";$("tab-sug").hidden=o;$("tab-obj").hidden=!o;
+  $("t-sug").setAttribute("aria-selected",String(!o));$("t-obj").setAttribute("aria-selected",String(o));
+  if(o)renderObj();try{localStorage.setItem("geo-tab",id)}catch(e){}}
+$("t-sug").addEventListener("click",()=>showTab("sug"));$("t-obj").addEventListener("click",()=>showTab("obj"));
+let tab0="sug";try{tab0=localStorage.getItem("geo-tab")||"sug"}catch(e){}if(location.hash==="#objetivo")tab0="obj";showTab(tab0);
+</script>
+
+</html>
