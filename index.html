@@ -496,7 +496,8 @@ render();
 
 // ── Objetivo mensual: toneladas recibidas (remitos) contra el objetivo guardado en la base del tablero ──
 const MESES=["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
-const DESC={};D.forEach(r=>{DESC[r[0]]=r[2]});
+// Nombres de artículos recibidos que no figuran en D (sin stock libre ni venta en el período)
+const DESC={"1013775":"GARRAPIÑADA DE ALMENDRA 24X80G","1011553":"CROCANTE DE MANI Y ALMEN 24X100","1013324":"CHOCO MOUSE DDL 24U X 100G"};D.forEach(r=>{DESC[r[0]]=r[2]});
 const recAlISO=REC_AL.split("/").reverse().join("-");
 const OBJ={};let objDb=null,objDirty=false;
 $("recAl").textContent=REC_AL;$("recAl2").textContent=REC_AL;
