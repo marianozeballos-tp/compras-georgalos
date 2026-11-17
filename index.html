@@ -189,11 +189,11 @@ input#objTn{width:120px}
     </div>
 
     <div class="notes">
-      <div><b>Qué cuenta como recibido.</b> Los remitos de ingreso de Georgalos (REMI-I) cargados en Gescom dentro del mes, por su fecha de carga, que coincide con el día en que llegó la mercadería. Las facturas no se suman porque repiten cada remito, y las notas de crédito y facturas de ajuste no traen mercadería.</div>
+      <div><b>Qué cuenta como recibido.</b> Los remitos de ingreso de Georgalos (REMI-I, y desde el 17/11 también los REMI que se cargan contra cada factura) cargados en Gescom dentro del mes, por su fecha de carga, que coincide con el día en que llegó la mercadería. Las facturas no se suman porque repiten cada remito, y las notas de crédito y facturas de ajuste no traen mercadería.</div>
       <div><b>Kilos.</b> Bultos recibidos por el peso bruto por bulto de la planilla de datos logísticos de Georgalos, el mismo que usa el sugerido de compra.</div>
       <div><b>Objetivo.</b> Se guarda por mes en este tablero y lo ven todos los que lo abren. Lo pueden cambiar quienes tienen permiso de edición. Los días hábiles que quedan cuentan de lunes a sábado, sin feriados.</div>
       <div><b>Actualización.</b> Los remitos se traen de Gescom cuando se actualiza el tablero; lo recibido después del <span id="recAl2"></span> todavía no figura.</div>
-      <div><b>Facturas sin remito (16/11).</b> Gescom tiene 8 facturas y 1 nota de crédito de Georgalos cargadas el 16/11, todas con el artículo genérico 500, sin detalle de mercadería. La mayor es la 166815, del 13/11, por $ 64.476.096. Como no tienen remito no cuentan como recibidas; si son de un pedido que todavía no llegó, van a sumar cuando se cargue su remito.</div>
+      <div><b>Remitos del 17/11.</b> Las facturas de Georgalos cargadas el 16/11 recibieron hoy su remito (tipo REMI, no REMI-I): 7 remitos con 5.728 kg y $ 62,9 millones sin IVA; el mayor es el 166815, con 504 bultos de Mantecol 111 g y 192 de Mantecol 253 g. Ya cuentan como recibidos en noviembre. Sigue sin remito la factura 164918, por $ 10.862.490, cargada el 16/11 con el artículo genérico 500.</div>
     </div>
   </section>
 </div>
@@ -202,77 +202,77 @@ input#objTn{width:120px}
 <script>
 // [codigo, empresa, descripcion, costoBulto, unidadesPorBulto, stock 17/11, venta 20/10-16/11, venta 03/11-16/11, clientes, primera venta, última venta, recodificado] · sin las compras de remitos completos de Ni Youyong (30/10 y 03/11)
 const D=[
-["26400","2","MANTECOL CLASICO X 111GR",58443.77,40,0,9681,4730,194,"10-20","11-13"],
-["26800","2","MANTECOL CLASICO X 253GR",106905.26,36,5,6486,4182,79,"10-20","11-16"],
-["2343","2","TODDY GALLE CHISPA CHOCO X 126GR",30075.43,24,219,6261,4725,364,"10-21","11-16"],
-["2340","2","TODDY CACAO X 180GR",10830.05,12,20,4559,1594,271,"10-20","11-13"],
-["1012645","2","MANTECOL GALLETAS OBLEAS 40UX85G",31878,40,1963,2881,878,96,"10-29","11-16",1],
-["1012646","2","ALFAJOR MANTECOL TRIPLE X20",16795.24,20,1341,1688,1019,94,"10-20","11-16"],
-["1012644","2","ALFAJOR MANTECOL SIMPLE X24",12035.1,24,857,1550,629,99,"10-20","11-16"],
-["27000","2","MANTECOL CLASICO X 404GR",101680.04,24,74,1467,1272,24,"10-20","11-14"],
-["1011210","2","TURRON DE MANI C/MIEL 24X120GR",18308.66,24,1154,1242,908,35,"10-21","11-14"],
-["1013776","1","ALMENDRAS CON CHOCOLATE 24X80 GR",37027.09,24,5,1106,575,34,"10-21","11-06"],
-["2017","1","FLOW CEREAL FRUTOS ROJOS YOGURT LIGHT XUNIDAD",8059.59,20,1268,1085,320,138,"10-20","11-16"],
-["22024","2","FLOW CEREAL ALMEN C/PISO DE CHOC XUNIDAD",9531.57,20,1134,927,265,136,"10-20","11-16"],
-["1012376","2","TODDY GALLETAS OBLEAS MOUSSE 40UX85G",27720,40,8,794,794,31,"11-13","11-16",1],
-["1012357","2","TODDY ALFAJOR MOUSSE X 50GR",14302.13,24,0,738,355,71,"10-29","11-13"],
-["3790","1","GEO CONF INFANTILES FTAS 36UX80GR",49467.24,36,4617,719,359,19,"10-20","11-14"],
-["2000","2","FLOW CEREAL GRANOLA C/CHOCOLATE XUNIDAD",8059.59,20,733,661,206,102,"10-20","11-16"],
-["3772","1","GARRAPIÑADA DE MANI X 100GR",26071.35,36,399,655,655,19,"11-12","11-16"],
-["1013413","2","GEO TURRON MANI MIEL 12X280GR",24829.11,12,2240,649,436,17,"10-22","11-16"],
+["26400","2","MANTECOL CLASICO X 111GR",58443.77,40,19126,9681,4730,194,"10-20","11-13"],
+["26800","2","MANTECOL CLASICO X 253GR",106905.26,36,6644,6486,4182,79,"10-20","11-16"],
+["2343","2","TODDY GALLE CHISPA CHOCO X 126GR",30075.43,24,2533,6261,4725,364,"10-21","11-16"],
+["2340","2","TODDY CACAO X 180GR",10830.05,12,706,4559,1594,271,"10-20","11-13"],
+["1012645","2","MANTECOL GALLETAS OBLEAS 40UX85G",31878,40,1543,2881,878,96,"10-29","11-16",1],
+["1012646","2","ALFAJOR MANTECOL TRIPLE X20",16795.24,20,967,1688,1019,94,"10-20","11-16"],
+["1012644","2","ALFAJOR MANTECOL SIMPLE X24",12035.1,24,683,1550,629,99,"10-20","11-16"],
+["27000","2","MANTECOL CLASICO X 404GR",101680.04,24,82,1467,1272,24,"10-20","11-14"],
+["1011210","2","TURRON DE MANI C/MIEL 24X120GR",21539.6,24,4504,1242,908,35,"10-21","11-14"],
+["1013776","1","ALMENDRAS CON CHOCOLATE 24X80 GR",41141.22,24,62,1106,575,34,"10-21","11-06"],
+["2017","1","FLOW CEREAL FRUTOS ROJOS YOGURT LIGHT XUNIDAD",8059.59,20,1221,1085,320,138,"10-20","11-16"],
+["22024","2","FLOW CEREAL ALMEN C/PISO DE CHOC XUNIDAD",9531.57,20,1102,927,265,136,"10-20","11-16"],
+["1012376","2","TODDY GALLETAS OBLEAS MOUSSE 40UX85G",31878,40,2140,794,794,31,"11-13","11-16",1],
+["1012357","2","TODDY ALFAJOR MOUSSE X 50GR",14302.13,24,6,738,355,71,"10-29","11-13"],
+["3790","1","GEO CONF INFANTILES FTAS 36UX80GR",49467.24,36,4612,719,359,19,"10-20","11-14"],
+["2000","2","FLOW CEREAL GRANOLA C/CHOCOLATE XUNIDAD",8059.59,20,715,661,206,102,"10-20","11-16"],
+["3772","1","GARRAPIÑADA DE MANI X 100GR",26071.35,36,327,655,655,19,"11-12","11-16"],
+["1013413","2","GEO TURRON MANI MIEL 12X280GR",24829.11,12,2233,649,436,17,"10-22","11-16"],
 ["273","2","FLYNN PAFF TUTTI-FRUTTI DISP X 70U",46560.25,12,2,610,288,306,"10-21","11-14"],
-["2341","2","TODDY CACAO X 360GR",25168.99,14,256,598,458,25,"10-30","11-16"],
-["1012519","2","ALFAJOR FULL MANI PASTA DE MANI 24UX40G",10305.68,24,23,595,319,25,"10-29","11-13"],
-["1013780","2","BOLITA CEREAL BAÑO/CHOCO 24X80GR",32397.75,24,1322,593,285,33,"10-20","11-16"],
-["25800","2","PALITOS DE LA SELVA X 660GR",68222.77,12,64,564,232,154,"10-20","11-16"],
-["1013773","2","MANI CON CHOCO 36X80GR",38088.63,36,0,553,553,6,"11-12","11-13"],
-["2023","2","FLOW CEREAL ALMEN/MANI/MIEL XUNIDAD",9531.57,20,1585,546,202,100,"10-20","11-16"],
+["2341","2","TODDY CACAO X 360GR",25168.99,14,138,598,458,25,"10-30","11-16"],
+["1012519","2","ALFAJOR FULL MANI PASTA DE MANI 24UX40G",10305.68,24,5,595,319,25,"10-29","11-13"],
+["1013780","2","BOLITA CEREAL BAÑO/CHOCO 24X80GR",32397.75,24,1269,593,285,33,"10-20","11-16"],
+["25800","2","PALITOS DE LA SELVA X 660GR",68222.77,12,3,564,232,154,"10-20","11-16"],
+["2023","2","FLOW CEREAL ALMEN/MANI/MIEL XUNIDAD",9531.57,20,1576,546,202,100,"10-20","11-16"],
+["1013773","2","MANI CON CHOCO 36X80GR",38088.63,36,13,540,540,6,"11-12","11-13"],
 ["1207","1","TABLETA CROCANTE DE MANI 24X150GR",30470.38,24,1542,454,376,13,"10-23","11-16"],
-["1012359","2","TODDY CACAO AVELLANAS X 150GR",10830.05,12,33,450,270,19,"10-23","11-16"],
+["1012359","2","TODDY CACAO AVELLANAS X 150GR",10830.05,12,0,450,270,19,"10-23","11-16"],
 ["10102348","1","TODDY GALLETA MINI X 50GR",18819.57,36,0,327,0,19,"10-20","10-27"],
-["1011984","2","MANTECOL ALMOHADITAS 16UX180G",27938.68,16,352,265,85,36,"10-20","11-16"],
+["1011984","2","MANTECOL ALMOHADITAS 16UX180G",27938.68,16,348,265,85,36,"10-20","11-16"],
 ["1012510","2","FULL MANI CHOCOLATE 20UX150G",41983.48,20,0,210,210,18,"11-03","11-14"],
-["10127012","2","MANTECOL COCO X 111GR",58443.77,40,0,200,200,6,"11-12","11-12"],
 ["10127011","2","MANTECOL CAFE X 111",58443.77,40,0,200,200,5,"11-12","11-12"],
+["10127012","2","MANTECOL COCO X 111GR",58443.77,40,0,200,200,6,"11-12","11-12"],
 ["26600","2","MANTECOL MARMOLADO X 111GR",69169.1,40,0,200,200,7,"11-12","11-12"],
 ["10127013","2","MANTECOL SALTED CARAMEL X 111GR",58443.77,40,0,200,200,6,"11-12","11-12"],
-["10143901","2","DISPLAY LENGUETAZO T FRUTTI X 32U",78953.49,18,85,195,103,112,"10-20","11-16"],
-["1011354","1","TURRON DE MANI BLANDO X 130GR",23510.16,20,2059,162,90,8,"10-22","11-16"],
-["1012363","2","TODDY ALFAJOR BLANCO MOUSSE 24UX50G",14302.13,24,0,155,0,20,"10-20","11-02"],
-["285","2","FLYNN PAFF FRUTILLA DISP X 70U",46560.25,12,179,145,117,105,"10-21","11-16"],
-["1011954","2","GRANOLA C/PASAS FLOW X320GR",48610.1,20,20,116,48,24,"10-20","11-14"],
-["2265","2","FLYNN PAFF BANANA DISP X 70U",46560.25,12,8,115,92,77,"10-27","11-16"],
-["1011962","2","GRANOLA 5 SEMILLAS FLOW X 320GR",48610.1,20,5,112,43,26,"10-20","11-13"],
-["1013775","2","GARRAPIÑADA DE ALMENDRA 24X80G",55692.06,24,371,109,109,5,"11-13","11-14"],
-["1011983","2","GRANOLA CHOCO FLOW X 320GR",48610.1,20,23,103,53,20,"10-20","11-16"],
+["10143901","2","DISPLAY LENGUETAZO T FRUTTI X 32U",78953.49,18,77,195,103,112,"10-20","11-16"],
+["1011354","1","TURRON DE MANI BLANDO X 130GR",23510.16,20,2049,162,90,8,"10-22","11-16"],
+["1012363","2","TODDY ALFAJOR BLANCO MOUSSE 24UX50G",14302.13,24,2,155,0,20,"10-20","11-02"],
+["285","2","FLYNN PAFF FRUTILLA DISP X 70U",46560.25,12,160,145,117,105,"10-21","11-16"],
+["1011954","2","GRANOLA C/PASAS FLOW X320GR",48610.1,20,7,116,48,24,"10-20","11-14"],
+["2265","2","FLYNN PAFF BANANA DISP X 70U",46560.25,12,0,115,92,77,"10-27","11-16"],
+["1011962","2","GRANOLA 5 SEMILLAS FLOW X 320GR",48610.1,20,2,112,43,26,"10-20","11-13"],
+["1013775","2","GARRAPIÑADA DE ALMENDRA 24X80G",55692.06,24,365,109,109,5,"11-13","11-14"],
+["1011983","2","GRANOLA CHOCO FLOW X 320GR",48610.1,20,3,103,53,20,"10-20","11-16"],
 ["1011982","2","FLYNN PAFF CEREAL CARAMELO 16X200G",26152.28,16,96,101,36,16,"10-20","11-04"],
-["1012517","2","FULL MANI CHOCOLATE 8DX15UX30G",70437.6,8,49,90,32,74,"10-20","11-16"],
+["1012517","2","FULL MANI CHOCOLATE 8DX15UX30G",70437.6,8,41,90,32,74,"10-20","11-16"],
 ["1963","2","TODDY CERE BOLITA DE CHOCO X 200GR",27938.68,16,2,80,6,9,"10-30","11-03"],
-["284","2","FLYNN PAFF MANZANA DISP X 70G",46560.25,12,8,79,64,58,"10-20","11-16"],
-["1012524","2","TODDY CUBANITO 12DX40UX10G",76796.72,12,222,78,18,31,"10-20","11-16",1],
+["284","2","FLYNN PAFF MANZANA DISP X 70G",46560.25,12,0,79,64,58,"10-20","11-16"],
+["1012524","2","TODDY CUBANITO 12DX40UX10G",76796.72,12,212,78,18,31,"10-20","11-16",1],
 ["1011264","1","BUDIN GEO \"MARMOLADO\" X250GR",23144.36,12,428,77,21,21,"10-22","11-13"],
 ["1012528","2","FULL MANI CHOCOLATE 8UX500G",52244.5,8,0,73,0,13,"10-20","10-30",1],
-["1012642","2","OBLEA MANTECOL DISPLAY X18U",65603.23,8,143,67,23,41,"10-20","11-16"],
+["1012642","2","OBLEA MANTECOL DISPLAY X18U",65603.23,8,131,67,23,41,"10-20","11-16"],
 ["1012508","2","FULL MANI CHOCOLATE 6DX10UX90G",79093.63,6,0,62,1,52,"10-23","11-03"],
 ["1012643","2","MANTECOL CUBANITO 12X40",83708.24,12,1,61,2,45,"10-20","11-04"],
 ["10125801","2","PALITOS DE LA SELVA BOLSITA X150GR",56540.33,44,0,54,1,11,"10-20","11-04"],
 ["1011262","1","BUDIN GEORGALOS \"CLASICO\" X 250GR",23144.36,12,487,48,12,8,"10-22","11-13"],
 ["1012637","2","MANTECOL BAÑADO C/CHOCO DISPX18U",104009.06,12,0,47,41,29,"10-20","11-09"],
 ["63900","2","MANTECOL CLASICO DISPLAY X 12U X41G",66708.41,8,1,44,11,31,"10-20","11-06"],
-["266","2","FLYNN PAFF UVA DISPLAY X 70U",48000.26,12,22,40,38,14,"10-21","11-16"],
-["10131103","2","CHICLE BAZOOKA T.FRUTTI DISP 80U",68580.05,18,1,35,12,33,"10-20","11-12"],
+["266","2","FLYNN PAFF UVA DISPLAY X 70U",46560.25,12,127,40,38,14,"10-21","11-16"],
 ["1012827","2","FLYNN PAFF JELLY BEANS 12X12",40471.97,12,1,35,0,9,"10-20","10-27"],
-["3955","2","PAN DULCE CON CHIPS 400G",29290.51,8,151,33,19,9,"10-22","11-13"],
-["2810","2","FLYNNPAFF XXL TUTTI DISP 24U",64902.53,12,4,33,33,25,"11-04","11-16"],
-["296","2","FLYNN PAFF PINTA LENGUA DISP X 70U",48000.26,12,90,31,30,26,"10-20","11-16"],
-["1012497","2","KIT SIN AZUCARES EXHIBIDOR",24972.95,1,24,31,10,15,"10-20","11-16"],
-["2419","2","COLMENITA CHOC C/LECHE 12D X 24U X 25G",135170.34,12,25,27,18,23,"10-30","11-13"],
-["1012512","2","TODDY CHOCOLATE MILK D. X 10U",84649.95,6,0,26,20,26,"10-31","11-11"],
+["10131103","2","CHICLE BAZOOKA T.FRUTTI DISP 80U",68580.05,18,1,35,12,33,"10-20","11-12"],
+["2810","2","FLYNNPAFF XXL TUTTI DISP 24U",64902.53,12,0,33,33,25,"11-04","11-16"],
+["3955","2","PAN DULCE CON CHIPS 400G",29290.51,8,139,33,19,9,"10-22","11-13"],
+["296","2","FLYNN PAFF PINTA LENGUA DISP X 70U",48000.26,12,84,31,30,26,"10-20","11-16"],
+["1012497","2","KIT SIN AZUCARES EXHIBIDOR",24972.95,1,18,31,10,15,"10-20","11-16"],
+["2419","2","COLMENITA CHOC C/LECHE 12D X 24U X 25G",135170.34,12,23,27,18,23,"10-30","11-13"],
 ["2421","2","COLMENITA CHOC BLANC 12D X 24U X 25G",135170.34,12,16,26,16,22,"10-30","11-13"],
+["1012512","2","TODDY CHOCOLATE MILK D. X 10U",84649.95,6,0,26,20,26,"10-31","11-11"],
 ["380","2","TURRON DE MANI 50U X 25G",7573.72,50,27,25,0,1,"10-20","10-20"],
-["1013324","2","CHOCO MOUSE DDL 24U X 100G",46826.2,24,0,25,25,2,"11-13","11-13"],
 ["1011553","2","CROCANTE DE MANI Y ALMEN 24X100",63335.97,24,336,24,24,1,"11-13","11-13"],
-["1013957","2","PAN DULCE S/FRUTA GEOR X400GR",23260.41,8,188,23,16,3,"10-23","11-13"],
+["1013324","2","CHOCO MOUSE DDL 24U X 100G",46826.2,24,1,24,24,2,"11-13","11-13"],
+["1013957","2","PAN DULCE S/FRUTA GEOR X400GR",23260.41,8,180,23,16,3,"10-23","11-13"],
 ["67700","2","BALDE MANTECOL 3.4K ALMENDRAS",42691.88,1,0,22,16,10,"10-20","11-13"],
 ["513","2","CHOCOLATIN GEO BLANCO DISP X 40U",64751.19,12,0,20,0,12,"10-20","10-28"],
 ["1012511","2","TODDY CHOCOLATE MOUSE D. X 10U",76184.96,6,0,19,1,19,"10-20","11-05"],
@@ -282,27 +282,28 @@ const D=[
 ["1012828","2","FLYNN PAFF JELLY BEANS ACIDO XTREMO 12X12X40G",68802.35,12,99,6,5,5,"10-20","11-10",1],
 ["63600","2","MANTECOL BOCADO DISP X 16UX26G",61634,8,0,4,0,4,"10-20","10-20"],
 ["2961","2","CHUP FLYNN TUTTIFRUTTI DISP X 24U",56470.49,18,0,3,0,2,"10-20","10-26"],
-["1012636","2","MANTECOL LINGOTE",54729.29,8,5,3,2,2,"10-28","11-09"],
-["1014943","2","LENGUETAZO PINTA LENGUA FRAMBUESA",55139.7,18,1,1,0,1,"10-31","10-31"],
-["2968","2","CHUP FLYNN SAND/MELON DISP 24U",56470.49,18,0,1,0,1,"10-26","10-26"],
-["64200","2","MANTECOL BARRA CLASI DISP X 9U X 64GR",58592.42,8,0,1,1,1,"11-05","11-05"],
+["1012636","2","MANTECOL LINGOTE",54729.29,8,445,3,2,2,"10-28","11-09"],
 ["1011189","1","MANI C/CHOC CONFITADO X 100GR",174476.16,24,0,1,1,1,"11-05","11-05"],
-["1011988","2","FLOW CEREAL HONEY CRUNCH 16X180G",19557.08,16,0,0,0,0],
+["1014943","2","LENGUETAZO PINTA LENGUA FRAMBUESA",55139.7,18,1,1,0,1,"10-31","10-31"],
+["64200","2","MANTECOL BARRA CLASI DISP X 9U X 64GR",58592.42,8,0,1,1,1,"11-05","11-05"],
+["2968","2","CHUP FLYNN SAND/MELON DISP 24U",56470.49,18,0,1,0,1,"10-26","10-26"],
 ["3245","2","HP GEOR C/CONF DE CHOCO X 22GR",45191.54,6,56,0,0,0],
+["1013261","2","HP TODDY CON CONFITES DISPX12UX22G",51352.07,6,91,0,0,0],
+["1011988","2","FLOW CEREAL HONEY CRUNCH 16X180G",19557.08,16,0,0,0,0],
 ["10143908","2","CAR FULLMINT MENTA DISP X12U",47785.2,24,0,0,0,0],
 ["1012507","2","FULL MANI RELLENO 6X10X110G",79093.63,6,1,0,0,0],
 ["10143911","2","CAR FULLMINT MENTA STRONG DISP X 12",47785.2,24,1,0,0,0],
-["1013261","2","HP TODDY CON CONFITES DISPX12UX22G",51352.07,6,91,0,0,0],
 ["2994","2","FLYNNIES YOGHURT DISP X 200U",59594.15,12,1,0,0,0],
 ["1012375","2","ALFAJOR TODDY TRIPLE MOUSSE",15550.92,20,0,0,0,0],
 ["2993","2","FLYNNIES SURTIDOS DISP X 200U",59594.15,12,1,0,0,0],
 ["282","2","CONFI FLYNNPAFF 30U X 50G",16436.42,30,1,0,0,0],
+["10131101","2","CHICLE BAZOOKA BANANA DISPLAY 80U",68580.05,18,18,0,0,0],
 ["1013203","2","HP MANTECOL CONFITES D. X12UX22GR",51352.07,6,5,0,0,0],
 ["1013219","2","HP TODDY MINI COOKIES X 126GR",100286.42,18,97,0,0,0],
 ["1013205","2","HP MANTECOL ESTUCHE 5UX700GR",78090.36,5,46,0,0,0],
 ["1013201","2","HP MANTECOL C/BOCADITOS X 200GR",141126.56,15,1,0,0,0]
 ];
-// Mercadería recibida de Georgalos: remitos de ingreso (REMI-I) por fecha de carga en Gescom. Las facturas no se suman: repiten los remitos.
+// Mercadería recibida de Georgalos: remitos de ingreso (REMI-I, y desde el 17/11 también REMI) por fecha de carga en Gescom. Las facturas no se suman: repiten los remitos.
 // [fecha carga, nro remito, fecha comprobante, comentario, [[cod Gescom, cantidad, unidad, kg, importe sin IVA], ...]] · datos de Gescom al 17/11/2026
 const REC_AL="17/11/2026";
 const REC=[
@@ -323,7 +324,14 @@ const REC=[
  ["2026-11-12",608,"2026-11-05","",[["26600",5.00,"Pack",23.5,418473.06],["10127013",5.00,"Pack",23.5,353584.81],["10127012",5.00,"Pack",23.5,353584.81],["10127011",5.00,"Pack",23.5,353584.81]]],
  ["2026-11-12",609,"2026-11-06","RECIBIDAS 12/11",[["67700",15.00,"Unidad",51.0,774857.62],["26800",40.00,"Pack",377.6,5174214.58],["26400",40.00,"Pack",188.1,2828678.47]]],
  ["2026-11-12",610,"2026-11-05","recibidas 12/11",[["1013775",20.00,"Pack",38.4,1347747.85],["1013324",1.00,"Pack",2.4,56659.7],["1011553",15.00,"Pack",36.0,1149547.86],["1013773",15.00,"Pack",43.2,691308.63],["3772",30.00,"Pack",108.0,946390.01],["1013413",136.00,"Pack",457.0,4085878.34]]],
- ["2026-11-13",611,"2026-11-06","recibido 6/11",[["10143901",5.00,"Pack",37.5,477668.61],["1012642",20.00,"Pack",92.9,1587598.17],["1011984",25.00,"Pack",82.5,845145.07],["266",5.00,"Pack",39.3,290401.57],["1012497",35.00,"Unidad",32.1,1057604.43],["1012644",60.00,"Pack",64.5,873748.26],["2341",51.00,"Pack",271.8,1553178.37],["296",8.00,"Pack",62.8,464642.52],["1012517",7.00,"Pack",25.6,596606.47],["1012645",70.00,"Pack",261.8,2700066.6],["1012359",25.00,"Pack",49.0,327609.01],["25800",20.00,"Pack",172.0,1650991.03],["1012524",20.00,"Pack",120.0,1858480.62],["1012646",100.00,"Pack",134.4,2032224.04],["1012376",20.00,"Pack",74.8,670824]]]
+ ["2026-11-13",611,"2026-11-06","recibido 6/11",[["10143901",5.00,"Pack",37.5,477668.61],["1012642",20.00,"Pack",92.9,1587598.17],["1011984",25.00,"Pack",82.5,845145.07],["266",5.00,"Pack",39.3,290401.57],["1012497",35.00,"Unidad",32.1,1057604.43],["1012644",60.00,"Pack",64.5,873748.26],["2341",51.00,"Pack",271.8,1553178.37],["296",8.00,"Pack",62.8,464642.52],["1012517",7.00,"Pack",25.6,596606.47],["1012645",70.00,"Pack",261.8,2700066.6],["1012359",25.00,"Pack",49.0,327609.01],["25800",20.00,"Pack",172.0,1650991.03],["1012524",20.00,"Pack",120.0,1858480.62],["1012646",100.00,"Pack",134.4,2032224.04],["1012376",20.00,"Pack",74.8,670824]]],
+ ["2026-11-17",166815,"2026-11-17","factura 166815",[["26400",504.00,"Pack",2369.8,29455660.08],["26800",192.00,"Pack",1812.5,20525809.92]]],
+ ["2026-11-17",166719,"2026-11-17","factura 166719",[["1012636",60.00,"Pack",272.4,3283757.4]]],
+ ["2026-11-17",166720,"2026-11-17","factura 166720",[["2340",80.00,"Pack",185.6,866404]]],
+ ["2026-11-17",166816,"2026-11-17","factura 166816",[["2343",108.00,"Pack",371.5,3248146.44]]],
+ ["2026-11-17",166779,"2026-11-17","factura 166779",[["1011210",33.00,"Pack",95.0,710806.8]]],
+ ["2026-11-17",166721,"2026-11-17","factura 166721",[["1012376",58.00,"Pack",216.9,1848924],["266",10.00,"Pack",78.5,465602.5],["10131101",1.00,"Pack",6.4,68580.05]]],
+ ["2026-11-17",166817,"2026-11-17","factura 166817",[["1013776",3.00,"Pack",5.8,123423.66],["1011210",109.00,"Pack",313.9,2347816.4]]]
 ];
 // Código de Georgalos (lista de precios de la nota Hermes, septiembre 2026) por código de Gescom
 const SC={"26400":"76222018126400","26600":"76222018126600","10127012":"76222018127012","10127013":"76222018127013","2343":"2343","26800":"76222018126800","2340":"2340","1012376":"2376","27000":"76222018127000",
@@ -342,7 +350,7 @@ const UPB_FIX={"1012644":"Gescom dice 20 por bulto","1012646":"Gescom dice 24 po
 // Kilos por bulto de Gescom: [kg, origen] · b = peso bruto de la planilla de datos logísticos de Georgalos 2026,
 // n = peso neto de esa planilla (no trae el bruto), e = estimado con los gramos de la descripción (no está en la planilla)
 const KG={"1011189":[2.4,"e"],"26600":[4.702,"b"],"10127011":[4.702,"b"],"10127012":[4.702,"b"],"10127013":[4.702,"b"],"1013775":[1.92,"e"],"1013324":[2.4,"e"],"1011553":[2.4,"e"],"26400":[4.702,"b"],"2343":[3.44,"b"],"26800":[9.44,"b"],"2340":[2.32,"b"],"1012645":[3.74,"b"],"1012646":[1.344,"b"],"22024":[0.698,"b"],"2017":[0.583,"b"],
- "1012644":[1.075,"b"],"1013776":[1.92,"e"],"2000":[0.56,"b"],"2023":[0.698,"b"],"27000":[10.4,"b"],"1011210":[2.88,"e"],"1013780":[1.92,"e"],"1012376":[3.74,"b"],
+ "1012644":[1.075,"b"],"1013776":[1.92,"e"],"10131101":[6.4,"b"],"2000":[0.56,"b"],"2023":[0.698,"b"],"27000":[10.4,"b"],"1011210":[2.88,"e"],"1013780":[1.92,"e"],"1012376":[3.74,"b"],
  "3790":[2.88,"e"],"25800":[8.6,"b"],"1012357":[1.636,"b"],"273":[7.851,"b"],"10102348":[2.24,"b"],"1011984":[3.3,"b"],"1012519":[1.07,"b"],"1012363":[1.344,"b"],
  "1013413":[3.36,"e"],"1012359":[1.96,"b"],"1011354":[2.6,"e"],"1011982":[3.9,"b"],"1207":[3.6,"e"],"10143901":[7.5,"n"],"1963":[3.9,"b"],"2341":[5.33,"b"],
  "1011264":[3,"e"],"1012643":[6.056,"b"],"1011954":[6.8,"b"],"1011262":[3,"e"],"1011962":[6.9,"b"],"1011983":[6.8,"b"],"2265":[7.851,"b"],"285":[7.851,"b"],
@@ -502,7 +510,7 @@ render();
 // ── Objetivo mensual: toneladas recibidas (remitos) contra el objetivo guardado en la base del tablero ──
 const MESES=["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
 // Nombres de artículos recibidos que no figuran en D (sin stock libre ni venta en el período)
-const DESC={"1013775":"GARRAPIÑADA DE ALMENDRA 24X80G","1011553":"CROCANTE DE MANI Y ALMEN 24X100","1013324":"CHOCO MOUSE DDL 24U X 100G"};D.forEach(r=>{DESC[r[0]]=r[2]});
+const DESC={"10131101":"CHICLE BAZOOKA BANANA DISPLAY 80U","1013775":"GARRAPIÑADA DE ALMENDRA 24X80G","1011553":"CROCANTE DE MANI Y ALMEN 24X100","1013324":"CHOCO MOUSE DDL 24U X 100G"};D.forEach(r=>{DESC[r[0]]=r[2]});
 const recAlISO=REC_AL.split("/").reverse().join("-");
 const OBJ={};let objDb=null,objDirty=false;
 $("recAl").textContent=REC_AL;$("recAl2").textContent=REC_AL;
@@ -539,7 +547,7 @@ function renderObj(){
     bar.setAttribute("aria-label",`Recibido ${tn(kgRec)} de ${tn(objKg)} toneladas`);
     $("objBarLbl").innerHTML=`<span>Recibido ${tn(kgRec)} t · ${int(kgRec/objKg*100)}%</span>${mk.hidden?"":`<span style="color:var(--transit)">| con el sugerido: ${tn(kgRec+sug)} t</span>`}<span>Objetivo ${tn(objKg)} t</span>`;
   }else{fill.style.width="0";mk.hidden=true;bar.setAttribute("aria-label","Sin objetivo cargado");$("objBarLbl").innerHTML=`<span>Recibido ${tn(kgRec)} t</span><span>Cargá el objetivo para ver el avance</span>`}
-  $("remBody").innerHTML=rem.length?rem.slice().reverse().map(r=>`<tr><td class="l num">${fec(r[0])}</td><td class="l">REMI-I ${r[1]}${r[3]?`<br><small style="color:var(--muted)">${r[3]}</small>`:""}</td><td class="num">${r[4].length}</td><td class="num">${int(kgR(r))}</td><td class="num">${money(impR(r))}</td></tr>`).join("")
+  $("remBody").innerHTML=rem.length?rem.slice().reverse().map(r=>`<tr><td class="l num">${fec(r[0])}</td><td class="l">${r[1]>99999?"REMI":"REMI-I"} ${r[1]}${r[3]?`<br><small style="color:var(--muted)">${r[3]}</small>`:""}</td><td class="num">${r[4].length}</td><td class="num">${int(kgR(r))}</td><td class="num">${money(impR(r))}</td></tr>`).join("")
     :`<tr><td colspan="5" class="l" style="white-space:normal;color:var(--muted)">No hay remitos de Georgalos cargados en ${mesN} al ${REC_AL}.</td></tr>`;
   $("remFoot").innerHTML=rem.length?`<td class="l" colspan="2">Total ${rem.length} remito${rem.length===1?"":"s"}</td><td class="num">${rem.reduce((s,r)=>s+r[4].length,0)}</td><td class="num">${int(kgRec)}</td><td class="num">${money(impRec)}</td>`:"";
   const A={};rem.forEach(r=>r[4].forEach(([cod,cant,uni,kg])=>{const a=A[cod]||(A[cod]={cod,b:0,kg:0});a.b+=cant;a.kg+=kg}));
